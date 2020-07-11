@@ -20,7 +20,7 @@ class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @DisplayName("회원 가입 화면 보이는지 테스트")
+    @DisplayName("회원 가입 화면 보이는성지 테스트")
     @Test
     void signUpForm() throws Exception {
         mockMvc.perform(get("/sign-up"))
