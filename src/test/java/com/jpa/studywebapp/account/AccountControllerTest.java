@@ -10,8 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -25,6 +24,7 @@ class AccountControllerTest {
     void signUpForm() throws Exception {
         mockMvc.perform(get("/sign-up"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("account/sign-up"));
+                .andExpect(view().name("account/sign-up")) //뷰가 존재하는지
+                .andExpect(model().attributeExists("signUpForm")); //속성이 존재하는지
     }
 }

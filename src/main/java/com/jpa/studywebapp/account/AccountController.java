@@ -10,13 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 public class AccountController {
 
     @GetMapping("/sign-up")
-    public String signUp(HttpServletRequest request, Model model){
+    public String signUpForm(HttpServletRequest request, Model model){
 
-        /*String email = request.getParameter("email");
-        String nickname = request.getParameter("nickname");
-        String password = request.getParameter("password");*/
-
-        //model.addAttribute("email", email);
+        //속성명과 클래스 이름이 같다면 생략가능
+       //model.addAttribute("signUpForm", new SignUpForm());
+        model.addAttribute(new SignUpForm());
 
         return "account/sign-up";
     }
