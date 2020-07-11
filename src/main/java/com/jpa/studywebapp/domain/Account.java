@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -48,17 +49,21 @@ public class Account {
 
     //알림설정 항목지
     //스터디 생성 여부 알림을 받을 수단
-    private String studyCreatedByEmail;
+    private boolean studyCreatedByEmail;
 
-    private String studyCreatedByWeb;
+    private boolean studyCreatedByWeb;
 
     //스터디 가입 신청 결과를 받을 수단
-    private String stuydyEnrollmentByEmail;
+    private boolean stuydyEnrollmentByEmail;
 
-    private String stuydyEnrollmentByWeb;
+    private boolean stuydyEnrollmentByWeb;
 
     //스터디 업데이트 결과를 받을 수단
-    private String studyUpdatedByEmail;
+    private boolean studyUpdatedByEmail;
 
-    private String studyUpdatedByWeb;
+    private boolean studyUpdatedByWeb;
+
+    public void generateEmailCheckToken() {
+        this.emailCheckToken = UUID.randomUUID().toString();
+    }
 }
