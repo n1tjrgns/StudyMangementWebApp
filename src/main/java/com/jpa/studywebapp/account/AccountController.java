@@ -19,8 +19,7 @@ import javax.validation.Valid;
 public class AccountController {
 
     private final SignUpFormValidator signUpFormValidator;
-    private final AccountRepository accountRepository;
-    private final JavaMailSender javaMailSender;
+    private final AccountService accountService;
 
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder){
@@ -44,26 +43,9 @@ public class AccountController {
             return "account/sign-up";
         }
 
-        Account account = Account.builder()
-                .email(signUpForm.getEmail())
-                .nickname(signUpForm.getNickname())
-                .password(signUpForm.getPassword()) //TODO 암호화
-                .studyCreatedByWeb(true)
-                .stuydyEnrollmentByWeb(true)
-                .studyUpdatedByWeb(true)
-                .build();
-
-        Account newAccount = accountRepository.save(account);
-
-        newAccount.generateEmailCheckToken();
-
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(newAccount.getEmail());
-        simpleMailMessage.setSubject("회원가입 인증 메일입니다.");
-        simpleMailMessage.setText("/check-email-token?token="+newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail() );
-
-        javaMailSender.send(simpleMailMessage);
+        //컨트롤러에서는 서비스에서 무슨 로직을 실행하는지 알 필요가없다.
+        //서비스 뒤로 숨긴다.
+        accountService.processNewAccount(signUpForm);
 
         //정상통과시 메인 페이지로
        return "redirect:/";
