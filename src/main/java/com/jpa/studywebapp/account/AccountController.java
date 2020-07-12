@@ -3,6 +3,7 @@ package com.jpa.studywebapp.account;
 import com.jpa.studywebapp.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -52,8 +52,9 @@ public class AccountController {
     }
 
     @GetMapping("/check-email-token")
+    @Transactional
     public String checkEmailToken(String token, String email, Model model){
-        String view = "account/checked-Email";
+        String view = "account/checked-email";
         Account account = accountRepository.findByEmail(email);
 
         if(account == null){
@@ -65,8 +66,8 @@ public class AccountController {
         }
 
         //정상적인 이메일인 경우
-        account.setEmailVerified(true);
-        account.setJoinedAt(LocalDateTime.now());
+        //리팩토링
+        account.completeSignUp();
 
         //뷰에 반환해줄 내용
         model.addAttribute("nickname", account.getNickname());

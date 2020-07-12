@@ -1,3 +1,17 @@
 spring:
   profiles:
     active: local
+
+  jpa:
+    hibernate:
+      ddl-auto:  create #create 어플 실행시점에 자동 테이블 리셋모드
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect #hibernate.dialect' not set h2 에러 해결
+        #show_sql: true #sysout 용
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug #logeer용
+    org.hibernate.type: trace #쿼리 파라미터 출력
