@@ -68,6 +68,7 @@ class AccountControllerTest {
         //assertTrue(accountRepository.existsByEmail("n1tjrgns@naver.com"));
         Account account = accountRepository.findByEmail("n1tjrgns@naver.com");
         assertNotNull(account);
+        assertNotNull(account.getEmailCheckToken());
         assertNotEquals("123456",account.getPassword());
 
         //회원가입을 하고나면 mailsender의 send메소드가 호출이 됐는지 확인
