@@ -61,7 +61,7 @@ public class AccountController {
             model.addAttribute("error", "wrong.email");
         }
 
-        if(!account.getEmailCheckToken().equals(token)){
+        if(account.isValidToken(token)){
             model.addAttribute("error", "wrong.token");
         }
 
