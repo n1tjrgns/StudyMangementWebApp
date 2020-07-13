@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,7 +67,8 @@ class AccountControllerTest {
             .param("password","12345678")
             .with(csrf()))  //타임리프 security를 사용할 때 폼 자체에서 csrf hidden value 를 같이 넘겨줘야함
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/"));
+            .andExpect(view().name("redirect:/"))
+            .andExpect(authenticated().withUsername("n1tjrgns"));
 
         //assertTrue(accountRepository.existsByEmail("n1tjrgns@naver.com"));
         Account account = accountRepository.findByEmail("n1tjrgns@naver.com");
@@ -86,7 +89,8 @@ class AccountControllerTest {
             .param("email","email@email.com"))
             .andExpect(status().isOk())
             .andExpect(view().name("account/checked-email"))
-            .andExpect(model().attributeExists("error"));
+            .andExpect(model().attributeExists("error"))
+            .andExpect(unauthenticated());
     }
 
     @DisplayName("이메일 인증 - 토큰 확인")
@@ -106,9 +110,12 @@ class AccountControllerTest {
                 .param("token",newAccount.getEmailCheckToken())
                 .param("email",newAccount.getEmail()))
                 .andExpect(status().isOk())
+                //TODO 왜 에러가 발생하면안되는데 발생해서 통과를 못하지? 이 부분 더 확인해봐야한다
+                // 에러가 발생한 상황에서 view를 리턴해줬어야했는데 안해줌..
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andExpect(model().attributeExists("numberOfUser"))
                 .andExpect(model().attributeExists("nickname"))
-                .andExpect(view().name("account/checked-email"));
+                .andExpect(view().name("account/checked-email"))
+                .andExpect(authenticated().withUsername("n1tjrgns"));
     }
 }

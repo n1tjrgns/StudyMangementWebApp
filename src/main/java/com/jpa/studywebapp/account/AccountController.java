@@ -45,7 +45,8 @@ public class AccountController {
 
         //컨트롤러에서는 서비스에서 무슨 로직을 실행하는지 알 필요가없다.
         //서비스 뒤로 숨긴다.
-        accountService.processNewAccount(signUpForm);
+        Account account = accountService.processNewAccount(signUpForm);
+        accountService.login(account); //로그인 기능
 
         //정상통과시 메인 페이지로
        return "redirect:/";
@@ -59,15 +60,18 @@ public class AccountController {
 
         if(account == null){
             model.addAttribute("error", "wrong.email");
+            return view;
         }
 
-        if(account.isValidToken(token)){
+        if(!account.isValidToken(token)){
             model.addAttribute("error", "wrong.token");
+            return view;
         }
 
         //정상적인 이메일인 경우
         //리팩토링
         account.completeSignUp();
+        accountService.login(account); //로그인 기능
 
         //뷰에 반환해줄 내용
         model.addAttribute("nickname", account.getNickname());
