@@ -46,7 +46,7 @@ public class AccountService {
     }
 
     //메소드 안에 기능이 너무 많아서 리팩토링
-    private void sendSignUpConfirmEmail(Account newAccount) {
+    public void sendSignUpConfirmEmail(Account newAccount) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(newAccount.getEmail());
         simpleMailMessage.setSubject("회원가입 인증 메일입니다.");

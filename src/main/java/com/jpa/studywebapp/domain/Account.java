@@ -32,6 +32,9 @@ public class Account {
     //이메일 체크 토큰값
     private String emailCheckToken;
 
+    //이메일 토큰 생성시
+    private LocalDateTime emailCheckTokenGeneratedAt;
+
     //가입 날짜
     private LocalDateTime joinedAt;
 
@@ -65,6 +68,7 @@ public class Account {
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
+        this.emailCheckTokenGeneratedAt = LocalDateTime.now(); //토큰 생성시 생성시각 저장
     }
 
     public void completeSignUp() {
@@ -74,5 +78,10 @@ public class Account {
 
     public boolean isValidToken(String token) {
         return this.emailCheckToken.equals(token);
+    }
+
+    //이메일 재전송 시각이 현재시각 기준 1시간이 흘렀는지 체크
+    public boolean canSendConfirmEmail() {
+        return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
 }

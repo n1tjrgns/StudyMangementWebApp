@@ -7,16 +7,23 @@
 <body class="bg-light">
     <div th:replace="fragments.html :: main-nav"></div>
 
-    <div class="py-5 text-center" th:if="${account != null && !account.emailVerified}">
-        <p class="lead">AppleHip 이메일 확인</p>
-        <h2>
-            AppleHip 서비스를 사용하기 위해서는 이메일 인증을 완료해주시기바랍니다.
-            <span th:text="${account.email}"></span>
-        </h2>
+    <div class="container">
+        <div class="py-5 text-center" th:if="${error != null}">
+            <p class="lead">AppleHip 가입</p>
+            <div  class="alert alert-danger" role="alert" th:text="${error}"></div>
+            <p class="lead" th:text="${email}">your@email.com</p>
+        </div>
 
-        <button type="button" class="btn btn-default btn-lg">
-            <small class="text-info"> <a href="#" th:href="@{/resend-email}">인증 이메일 다시 보내기</a></small>
-        </button>
+        <div class="py-5 text-center" th:if="${error == null}">
+            <p class="lead">AppleHip 가입</p>
+
+            <h2>AppleHip 서비스를 사용하려면 인증 이메일을 확인하세요.</h2>
+
+            <div>
+                <p class="lead" th:text="${email}">your@email.com</p>
+                <a class="btn btn-outline-info" th:href="@{/resend-confirm-email}">인증 이메일 다시 보내기</a>
+            </div>
+        </div>
     </div>
 
     <div th:replace="fragments.html :: footer"></div>

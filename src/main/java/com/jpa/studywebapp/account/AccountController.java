@@ -2,7 +2,6 @@ package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,44 +82,24 @@ public class AccountController {
         return view;
     }
 
-    //가입 이메일 재전송 컨트롤러
+    //가입 이메일 재전송 컨트롤러(회원가입은했지만, 이메일 인증을 안 한 회원)
     @GetMapping("/check-email")
     public String checkEmail(@CurrentUser Account account, Model model){
 
-        System.out.println("check-email");
-        if(account != null){
-            model.addAttribute(account);
-        }
+        //이메일만 있으면 되기 때문에
+        model.addAttribute("email", account.getEmail());
 
         return "account/check-email";
     }
 
-    @GetMapping("/resend-email")
+    @GetMapping("/resend-confirm-email")
     public String resendEmail(@CurrentUser Account account, Model model){
-        if(account != null){
+        if(!account.canSendConfirmEmail()){
+            model.addAttribute("error", "이메일은 1시간에 한 번 만 보낼 수 있습니다.");
             model.addAttribute(account);
         }
 
-        Account resendAccount = processReSendEmail(account);
-        accountService.login(resendAccount); //로그인 기능
-
+        accountService.sendSignUpConfirmEmail(account);
         return "redirect:/";
-    }
-
-    private Account processReSendEmail(Account account) {
-        account.generateEmailCheckToken();
-        sendSignUpConfirmEmail(account);
-
-        return account;
-    }
-
-    private void sendSignUpConfirmEmail(Account newAccount) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(newAccount.getEmail());
-        simpleMailMessage.setSubject("회원가입 인증 메일입니다.");
-        simpleMailMessage.setText("/check-email-token?token="+newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail() );
-
-        javaMailSender.send(simpleMailMessage);
     }
 }
