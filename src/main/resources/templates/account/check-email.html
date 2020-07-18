@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav"></div>
+
+    <div class="py-5 text-center" th:if="${account != null && !account.emailVerified}">
+        <p class="lead">AppleHip 이메일 확인</p>
+        <h2>
+            AppleHip 서비스를 사용하기 위해서는 이메일 인증을 완료해주시기바랍니다.
+            <span th:text="${account.email}"></span>
+        </h2>
+
+        <button type="button" class="btn btn-default btn-lg">
+            <small class="text-info"> <a href="#" th:href="@{/resend-email}">인증 이메일 다시 보내기</a></small>
+        </button>
+    </div>
+
+    <div th:replace="fragments.html :: footer"></div>
+</body>
+</html>

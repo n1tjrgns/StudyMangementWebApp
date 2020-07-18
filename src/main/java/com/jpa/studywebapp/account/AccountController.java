@@ -2,6 +2,8 @@ package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ public class AccountController {
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
     private final AccountRepository accountRepository;
+    private final JavaMailSender javaMailSender;
 
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder){
@@ -78,5 +81,46 @@ public class AccountController {
         model.addAttribute("numberOfUser", accountRepository.count());
 
         return view;
+    }
+
+    //가입 이메일 재전송 컨트롤러
+    @GetMapping("/check-email")
+    public String checkEmail(@CurrentUser Account account, Model model){
+
+        System.out.println("check-email");
+        if(account != null){
+            model.addAttribute(account);
+        }
+
+        return "account/check-email";
+    }
+
+    @GetMapping("/resend-email")
+    public String resendEmail(@CurrentUser Account account, Model model){
+        if(account != null){
+            model.addAttribute(account);
+        }
+
+        Account resendAccount = processReSendEmail(account);
+        accountService.login(resendAccount); //로그인 기능
+
+        return "redirect:/";
+    }
+
+    private Account processReSendEmail(Account account) {
+        account.generateEmailCheckToken();
+        sendSignUpConfirmEmail(account);
+
+        return account;
+    }
+
+    private void sendSignUpConfirmEmail(Account newAccount) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(newAccount.getEmail());
+        simpleMailMessage.setSubject("회원가입 인증 메일입니다.");
+        simpleMailMessage.setText("/check-email-token?token="+newAccount.getEmailCheckToken() +
+                "&email=" + newAccount.getEmail() );
+
+        javaMailSender.send(simpleMailMessage);
     }
 }
