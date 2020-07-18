@@ -7,6 +7,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +19,7 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
@@ -65,5 +68,20 @@ public class AccountService {
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContextHolder.getContext().setAuthentication(token);
 
+    }
+
+    //이메일과 닉네임으로 로그
+    @Override
+    public UserDetails loadUserByUsername(String emailOrNickName) throws UsernameNotFoundException {
+
+        Account account = accountRepository.findByEmail(emailOrNickName);
+        if(account == null){
+            account = accountRepository.findByNickname(emailOrNickName);
+        }
+
+        if (account == null) throw new UsernameNotFoundException(emailOrNickName);
+
+        //앞서 만들었던 principal 객체를 리턴해줘야한다.
+        return new UserAccount(account);
     }
 }

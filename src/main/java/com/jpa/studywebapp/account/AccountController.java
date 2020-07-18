@@ -2,7 +2,6 @@ package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,7 +20,6 @@ public class AccountController {
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
     private final AccountRepository accountRepository;
-    private final JavaMailSender javaMailSender;
 
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder){

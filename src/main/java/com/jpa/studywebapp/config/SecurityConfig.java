@@ -21,6 +21,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET,"/profile/*").permitAll() //Get 만 허용
                 .anyRequest().authenticated(); //나머지는 인증을 타야한다.
 
+        //로그인 커스텀 페이지에 대한 권한 허용
+        http.formLogin()
+                .loginPage("/login")
+                .permitAll();
+
+        //로그아웃이 성공했을 때
+        http.logout()
+                .logoutSuccessUrl("/");
     }
 
     //img를 허용해주기 위한 설정
