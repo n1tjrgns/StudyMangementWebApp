@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .mvcMatchers("/node_modules/**")
+                .mvcMatchers("/node_modules/**","/img/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); //static resources들에 대한 허용
     }
 }
