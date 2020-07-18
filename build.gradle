@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id "com.github.node-gradle.node" version "2.2.3"
 }
 
 group = 'com.jpa'
@@ -35,9 +36,25 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    // https://mvnrepository.com/artifact/com.sun/tools
+    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5' //타임리프 시큐리티
+    compile group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.8.0'
 }
 
 test {
     useJUnitPlatform()
 }
+
+node {
+    version = '14.5.0'
+    download = true
+    nodeModulesDir = file("${projectDir}/src/main/resources/static")
+}
+
+task copyFrontLib(type: Copy) {
+    from "${projectDir}/src/main/resources/static"
+    into "${projectDir}/build/resources/main/static/."
+}
+
+copyFrontLib.dependsOn npmInstall
+compileJava.dependsOn copyFrontLib
+
