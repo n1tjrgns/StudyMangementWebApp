@@ -76,7 +76,7 @@ class MainControllerTest {
     @Test
     void logout() throws Exception {
         mockMvc.perform(post("/logout")
-                .with(csrf())) //시큐리티에서는 csrf 와 같
+                .with(csrf())) //시큐리티에서는 csrf 와 같성
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(unauthenticated());
