@@ -1,6 +1,7 @@
 package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.settings.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -90,5 +91,13 @@ public class AccountService implements UserDetailsService {
     public void completeSignUp(Account account) {
         account.completeSignUp();
         login(account); //자로그인 기능
+    }
+
+    public void updateProfile(Account account, Profile profile) {
+        account.setBio(profile.getBio());
+        account.setUrl(profile.getUrl());
+        account.setOccupation(profile.getOccupation());
+        account.setLocation(profile.getLocation());
+        accountRepository.save(account);
     }
 }
