@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -70,8 +71,8 @@ public class AccountController {
 
         //정상적인 이메일인 경우
         //리팩토링
-        account.completeSignUp();
-        accountService.login(account); //로그인 기능
+        //서비스단으로 옮겨 트랜잭션안에서 관리
+        accountService.completeSignUp(account);
 
         //뷰에 반환해줄 내용
         model.addAttribute("nickname", account.getNickname());
@@ -100,5 +101,17 @@ public class AccountController {
 
         accountService.sendSignUpConfirmEmail(account);
         return "redirect:/";
+    }
+
+    @GetMapping("/profile/{nickname}")
+    public String profile(@PathVariable String nickname, Model model, @CurrentUser Account account){
+        Account byNickname = accountRepository.findByNickname(nickname);
+        if(nickname == null){
+            throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다");
+        }
+
+        model.addAttribute(byNickname); //alias를 따로 지정해주지 않으면 해당 타입으로 저장됨, 여기서는 "account"
+        model.addAttribute("isOwner", byNickname.equals(account));
+        return "account/profile";
     }
 }

@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.util.Collections;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
@@ -25,7 +26,7 @@ public class AccountService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional //트랜잭션을 붙여줘야하는 이유 따로 정리함.
+    //@Transactional //트랜잭션을 붙여줘야하는 이유 따로 정리함.
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
@@ -71,6 +72,7 @@ public class AccountService implements UserDetailsService {
     }
 
     //이메일과 닉네임으로 로그
+    @Transactional(readOnly = true) //읽기 전용으로 성능 향상을 꾀할 수 있음.
     @Override
     public UserDetails loadUserByUsername(String emailOrNickName) throws UsernameNotFoundException {
 
@@ -83,5 +85,10 @@ public class AccountService implements UserDetailsService {
 
         //앞서 만들었던 principal 객체를 리턴해줘야한다.
         return new UserAccount(account);
+    }
+
+    public void completeSignUp(Account account) {
+        account.completeSignUp();
+        login(account); //자로그인 기능
     }
 }
