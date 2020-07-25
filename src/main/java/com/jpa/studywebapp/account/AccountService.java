@@ -127,4 +127,10 @@ public class AccountService implements UserDetailsService {
         modelMapper.map(notificationForm, account);
         accountRepository.save(account); //merge
     }
+
+    //닉네임 업데이트
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account);
+    }
 }

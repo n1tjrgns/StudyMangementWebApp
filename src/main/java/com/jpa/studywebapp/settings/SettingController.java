@@ -3,8 +3,10 @@ package com.jpa.studywebapp.settings;
 import com.jpa.studywebapp.account.AccountService;
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.settings.form.NicknameForm;
 import com.jpa.studywebapp.settings.form.NotificationForm;
 import com.jpa.studywebapp.settings.form.PasswordForm;
+import com.jpa.studywebapp.settings.validator.NicknameValidator;
 import com.jpa.studywebapp.settings.validator.PasswordFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,10 +28,16 @@ public class SettingController {
 
     private final AccountService accountService;
     private final ModelMapper modelMapper;
+    private final NicknameValidator nicknameValidator;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder){
         webDataBinder.addValidators(new PasswordFormValidator());
+    }
+
+    @InitBinder("nicknameForm")
+    public void initBinder2(WebDataBinder webDataBinder){
+        webDataBinder.addValidators(nicknameValidator);
     }
 
     @GetMapping("/settings/profile")
@@ -108,5 +116,28 @@ public class SettingController {
         attributes.addFlashAttribute("message","알림설정이 수정되었습니다.");
 
         return "redirect:/settings/notifications";
+    }
+
+    @GetMapping("/settings/account")
+    public String nicknameForm(@CurrentUser Account account, Model model){
+        model.addAttribute(account);
+        model.addAttribute(new NicknameForm(account));
+
+        return "settings/account";
+    }
+
+    @PostMapping("/settings/account")
+    public String nicknameUpdate(@CurrentUser Account account, Model model
+                                , @Valid NicknameForm nicknameForm, Errors errors, RedirectAttributes attributes){
+
+        if(errors.hasErrors()){
+            model.addAttribute(account);
+            return "settings/account";
+        }
+
+        accountService.updateNickname(account, nicknameForm.getNickname());
+        attributes.addFlashAttribute("message", "닉네임이 변경되었습니다.");
+
+        return "redirect:/settings/account";
     }
 }
