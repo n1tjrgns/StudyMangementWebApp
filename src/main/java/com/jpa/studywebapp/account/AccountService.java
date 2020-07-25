@@ -134,4 +134,16 @@ public class AccountService implements UserDetailsService {
         accountRepository.save(account);
         login(account); //닉네임 업데이트시 로그인을 시켜줘야 프로필의 닉네임이 새로 반영됨
     }
+
+    //이메일 발송
+    public void sendLoginLink(Account emailAccount) {
+        emailAccount.generateEmailCheckToken();
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(emailAccount.getEmail());
+        simpleMailMessage.setSubject("로그인 링크.");
+        simpleMailMessage.setText("/login-by-email?token="+emailAccount.getEmailCheckToken() +
+                "&email=" + emailAccount.getEmail() );
+
+        javaMailSender.send(simpleMailMessage);
+    }
 }
