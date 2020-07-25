@@ -1,8 +1,8 @@
 package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
-import com.jpa.studywebapp.settings.NotificationForm;
 import com.jpa.studywebapp.settings.Profile;
+import com.jpa.studywebapp.settings.form.NotificationForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;

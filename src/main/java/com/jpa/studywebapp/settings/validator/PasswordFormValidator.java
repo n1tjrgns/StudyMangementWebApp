@@ -1,5 +1,6 @@
-package com.jpa.studywebapp.settings;
+package com.jpa.studywebapp.settings.validator;
 
+import com.jpa.studywebapp.settings.form.PasswordForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
