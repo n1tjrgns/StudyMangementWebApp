@@ -38,6 +38,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5' //타임리프 시큐리티
     compile group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.8.0'
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6' //모델 매퍼
+
 }
 
 test {

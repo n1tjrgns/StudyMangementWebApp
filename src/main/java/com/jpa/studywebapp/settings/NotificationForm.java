@@ -1,6 +1,5 @@
 package com.jpa.studywebapp.settings;
 
-import com.jpa.studywebapp.domain.Account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,12 +21,13 @@ public class NotificationForm {
 
     private boolean studyUpdatedByWeb = true;
 
-    public NotificationForm(Account account) {
+    //ModelMapper 사용으로 인한 생성자 쓸모없어짐
+    /*public NotificationForm(Account account) {
         this.studyCreatedByEmail = account.isStudyCreatedByEmail();
         this.studyCreatedByWeb = account.isStudyCreatedByWeb();
         this.studyEnrollmentResultByEmail = account.isStudyEnrollmentResultByEmail();
         this.studyEnrollmentResultByWeb = account.isStudyEnrollmentResultByWeb();
         this.studyUpdatedByEmail = account.isStudyUpdatedByEmail();
         this.studyUpdatedByWeb = account.isStudyUpdatedByWeb();
-    }
+    }*/
 }

@@ -4,6 +4,7 @@ import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.settings.NotificationForm;
 import com.jpa.studywebapp.settings.Profile;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     //@Transactional //트랜잭션을 붙여줘야하는 이유 따로 정리함.
     public Account processNewAccount(SignUpForm signUpForm) {
@@ -112,12 +114,17 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateNotification(Account account, NotificationForm notificationForm) {
-        account.setStudyCreatedByEmail(notificationForm.isStudyCreatedByEmail());
+
+        //ModelMapper 사용으로 인해 쓸모없어짐
+        /*account.setStudyCreatedByEmail(notificationForm.isStudyCreatedByEmail());
         account.setStudyCreatedByWeb(notificationForm.isStudyCreatedByWeb());
         account.setStudyUpdatedByEmail(notificationForm.isStudyUpdatedByEmail());
         account.setStudyUpdatedByWeb(notificationForm.isStudyUpdatedByWeb());
         account.setStudyEnrollmentResultByEmail(notificationForm.isStudyEnrollmentResultByEmail());
-        account.setStudyEnrollmentResultByWeb(notificationForm.isStudyEnrollmentResultByWeb());
+        account.setStudyEnrollmentResultByWeb(notificationForm.isStudyEnrollmentResultByWeb());*/
+
+        //위 set을 아래 한줄로 대체 할 수 있음.
+        modelMapper.map(notificationForm, account);
         accountRepository.save(account); //merge
     }
 }

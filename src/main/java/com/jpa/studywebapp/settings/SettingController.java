@@ -4,6 +4,7 @@ import com.jpa.studywebapp.account.AccountService;
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 public class SettingController {
 
     private final AccountService accountService;
+    private final ModelMapper modelMapper;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder){
@@ -31,6 +33,7 @@ public class SettingController {
     public String profileUpdateForm(@CurrentUser Account account, Model model){
         model.addAttribute(account);
         model.addAttribute(new Profile(account));
+
 
         return "settings/profile";
     }
@@ -81,7 +84,10 @@ public class SettingController {
     public String notificationForm(@CurrentUser Account account, Model model){
 
         model.addAttribute(account);
-        model.addAttribute(new NotificationForm(account));
+        //ModelMapper 사용으로 인해 쓸모없어짐
+        //model.addAttribute(new NotificationForm(account));
+        //두 코드는 같은 코드. account를 Notification을 사용해서 값을 채우는데 사용하라
+        model.addAttribute(modelMapper.map(account, NotificationForm.class));
 
         return "settings/notifications";
     }
