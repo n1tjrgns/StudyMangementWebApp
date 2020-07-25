@@ -132,5 +132,6 @@ public class AccountService implements UserDetailsService {
     public void updateNickname(Account account, String nickname) {
         account.setNickname(nickname);
         accountRepository.save(account);
+        login(account); //닉네임 업데이트시 로그인을 시켜줘야 프로필의 닉네임이 새로 반영됨
     }
 }
