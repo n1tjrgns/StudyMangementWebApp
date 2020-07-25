@@ -1,6 +1,7 @@
 package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.settings.NotificationForm;
 import com.jpa.studywebapp.settings.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -43,7 +44,7 @@ public class AccountService implements UserDetailsService {
                 .nickname(signUpForm.getNickname())
                 .password(passwordEncoder.encode(signUpForm.getPassword())) // 패스워드 암호화
                 .studyCreatedByWeb(true)
-                .stuydyEnrollmentByWeb(true)
+                .studyEnrollmentResultByWeb(true)
                 .studyUpdatedByWeb(true)
                 .build();
 
@@ -61,6 +62,7 @@ public class AccountService implements UserDetailsService {
         javaMailSender.send(simpleMailMessage);
     }
 
+    //로그인 권한 부
     public void login(Account account) {
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -88,21 +90,34 @@ public class AccountService implements UserDetailsService {
         return new UserAccount(account);
     }
 
+    //회원가입 완료시 자동 로그
     public void completeSignUp(Account account) {
         account.completeSignUp();
         login(account); //자로그인 기능
     }
 
+    //프로필 수정
     public void updateProfile(Account account, Profile profile) {
         account.setBio(profile.getBio());
         account.setUrl(profile.getUrl());
         account.setOccupation(profile.getOccupation());
         account.setLocation(profile.getLocation());
-        accountRepository.save(account);
+        accountRepository.save(account); //merge
     }
 
+    // 비밀번호 업데이트
     public void updatePassword(Account account, String newPassword) {
         account.setPassword(passwordEncoder.encode(newPassword));
-        accountRepository.save(account);
+        accountRepository.save(account); //merge
+    }
+
+    public void updateNotification(Account account, NotificationForm notificationForm) {
+        account.setStudyCreatedByEmail(notificationForm.isStudyCreatedByEmail());
+        account.setStudyCreatedByWeb(notificationForm.isStudyCreatedByWeb());
+        account.setStudyUpdatedByEmail(notificationForm.isStudyUpdatedByEmail());
+        account.setStudyUpdatedByWeb(notificationForm.isStudyUpdatedByWeb());
+        account.setStudyEnrollmentResultByEmail(notificationForm.isStudyEnrollmentResultByEmail());
+        account.setStudyEnrollmentResultByWeb(notificationForm.isStudyEnrollmentResultByWeb());
+        accountRepository.save(account); //merge
     }
 }

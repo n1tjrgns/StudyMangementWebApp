@@ -54,17 +54,17 @@ public class Account {
     //스터디 생성 여부 알림을 받을 수단
     private boolean studyCreatedByEmail;
 
-    private boolean studyCreatedByWeb;
+    private boolean studyCreatedByWeb = true;
 
     //스터디 가입 신청 결과를 받을 수단
-    private boolean stuydyEnrollmentByEmail;
+    private boolean studyEnrollmentResultByEmail;
 
-    private boolean stuydyEnrollmentByWeb;
+    private boolean studyEnrollmentResultByWeb = true;
 
     //스터디 업데이트 결과를 받을 수단
     private boolean studyUpdatedByEmail;
 
-    private boolean studyUpdatedByWeb;
+    private boolean studyUpdatedByWeb = true;
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
