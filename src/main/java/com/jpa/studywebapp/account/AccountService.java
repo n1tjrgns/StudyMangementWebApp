@@ -1,8 +1,9 @@
 package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
-import com.jpa.studywebapp.settings.Profile;
+import com.jpa.studywebapp.domain.Tag;
 import com.jpa.studywebapp.settings.form.NotificationForm;
+import com.jpa.studywebapp.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -145,5 +147,14 @@ public class AccountService implements UserDetailsService {
                 "&email=" + emailAccount.getEmail() );
 
         javaMailSender.send(simpleMailMessage);
+    }
+
+    public void addTag(Account account, Tag tag) {
+        //여기의 account도 detached임을 주의, lazyloading도 불가능함
+        //그래서 먼저 읽어와야한다. eager 방식
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().add(tag));
+
+        //lazyloading -> accountRepository.getOne() 무조건 lazyloading
     }
 }
