@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -156,5 +157,11 @@ public class AccountService implements UserDetailsService {
         byId.ifPresent(a -> a.getTags().add(tag));
 
         //lazyloading -> accountRepository.getOne() 무조건 lazyloading
+    }
+
+    public Set<Tag> getTags(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        //없으면 에러를 던지고 있으면 태그를 가져온다
+        return byId.orElseThrow(NullPointerException::new).getTags();
     }
 }

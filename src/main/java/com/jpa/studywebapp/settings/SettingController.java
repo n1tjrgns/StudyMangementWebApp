@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //프로필 수정 컨트롤러
 @Controller
@@ -146,6 +148,10 @@ public class SettingController {
     public String updateTags(@CurrentUser Account account, Model model){
 
         model.addAttribute(account);
+        Set<Tag> tags = accountService.getTags(account);
+        //model에 리스트로 데이터를 넘기는 방법
+        //실제 데이터는 List<String> tags = List.of("spring","jpa")가 된다.
+        model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
 
         return "/settings/tags";
     }
@@ -171,4 +177,6 @@ public class SettingController {
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }
+
+
 }
