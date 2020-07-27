@@ -140,4 +140,13 @@ public class SettingController {
 
         return "redirect:/settings/account";
     }
+
+    //태그 컨트롤러
+    @GetMapping("/settings/tags")
+    public String updateTags(@CurrentUser Account account, Model model){
+
+        model.addAttribute(account);
+
+        return "/settings/tags";
+    }
 }
