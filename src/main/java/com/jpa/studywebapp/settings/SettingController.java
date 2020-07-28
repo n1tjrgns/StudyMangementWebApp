@@ -178,5 +178,27 @@ public class SettingController {
         return ResponseEntity.ok().build();
     }
 
+    //태그 삭제
+    @GetMapping("/settings/tags/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentUser Account account, @RequestBody TagForm tagForm){
+
+        String title = tagForm.getTagTitle();
+
+        //Optional을 사용 할 경우
+        /*Tag tag = tagRepository.findByTitle(title).orElseGet(() -> tagRepository.save(Tag.builder()
+                .title(tagForm.getTagTitle())
+                .build()));*/
+
+        Tag tag = tagRepository.findByTitle(title);
+
+        if(tag == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.removeTag(account, tag);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

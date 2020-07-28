@@ -164,4 +164,9 @@ public class AccountService implements UserDetailsService {
         //없으면 에러를 던지고 있으면 태그를 가져온다
         return byId.orElseThrow(NullPointerException::new).getTags();
     }
+
+    public void removeTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().remove(tag));
+    }
 }
