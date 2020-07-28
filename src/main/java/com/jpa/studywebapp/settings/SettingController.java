@@ -1,5 +1,7 @@
 package com.jpa.studywebapp.settings;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpa.studywebapp.account.AccountService;
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
@@ -9,7 +11,6 @@ import com.jpa.studywebapp.settings.validator.NicknameValidator;
 import com.jpa.studywebapp.settings.validator.PasswordFormValidator;
 import com.jpa.studywebapp.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ public class SettingController {
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
     private final TagRepository tagRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper; //fasterxml을 기본적으로 의존성이 들어와있
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder){
@@ -149,7 +149,7 @@ public class SettingController {
 
     //태그 컨트롤러
     @GetMapping("/settings/tags")
-    public String updateTags(@CurrentUser Account account, Model model) throws IOException {
+    public String updateTags(@CurrentUser Account account, Model model) throws JsonProcessingException {
 
         model.addAttribute(account);
         Set<Tag> tags = accountService.getTags(account);
