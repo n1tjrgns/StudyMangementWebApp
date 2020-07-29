@@ -165,7 +165,7 @@ public class SettingController {
     }
 
     //태그 ajax add
-    @GetMapping("/settings/tags/add")
+    @PostMapping("/settings/tags/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentUser Account account, @RequestBody TagForm tagForm){
 
@@ -179,7 +179,7 @@ public class SettingController {
         Tag tag = tagRepository.findByTitle(title);
 
         if(tag == null){
-            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+            tag = tagRepository.save(Tag.builder().title(title).build());
         }
 
         accountService.addTag(account, tag);
@@ -187,7 +187,7 @@ public class SettingController {
     }
 
     //태그 삭제
-    @GetMapping("/settings/tags/remove")
+    @PostMapping("/settings/tags/remove")
     @ResponseBody
     public ResponseEntity removeTag(@CurrentUser Account account, @RequestBody TagForm tagForm){
 

@@ -1,24 +1,30 @@
 package com.jpa.studywebapp.settings;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpa.studywebapp.WithAccount;
 import com.jpa.studywebapp.account.AccountRepository;
 import com.jpa.studywebapp.account.AccountService;
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.domain.Tag;
+import com.jpa.studywebapp.settings.form.TagForm;
+import com.jpa.studywebapp.tag.TagRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class SettingControllerTest {
@@ -31,6 +37,12 @@ class SettingControllerTest {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    TagRepository tagRepository;
 
     //WithAccountSecurityContextFactory에서 매번 계정을 새로 만들기 때문에 테스트 후에는 데이터를 지워줘야한다.
     @AfterEach
@@ -79,5 +91,57 @@ class SettingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("profile"));
+    }
+
+    @WithAccount("n1tjrgns")
+    @DisplayName("tagForm 테스트")
+    @Test
+    void tagForm() throws Exception {
+        mockMvc.perform(get("/settings/tags"))
+                .andExpect(view().name("/settings/tags"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("whitelist"))
+                .andExpect(model().attributeExists("tags"));
+    }
+
+    //ajax 데이터 테스트 하는 방법, 데이터 본문이 넘어옴
+    @WithAccount("n1tjrgns")
+    @DisplayName("계정에 태그 추가")
+    @Test
+    void addTag() throws Exception {
+        TagForm tagForm = new TagForm();
+        tagForm.setTagTitle("newTag");
+
+        mockMvc.perform(post("/settings/tags/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tagForm))
+                .with(csrf()))
+                .andExpect(status().isOk());
+
+        Tag newTag = tagRepository.findByTitle("newTag");
+        assertNotNull(newTag);
+        Account newAccount = accountRepository.findByNickname("n1tjrgns");
+        assertTrue(newAccount.getTags().contains(newTag));
+    }
+
+    @WithAccount("n1tjrgns")
+    @DisplayName("계정에 태그 삭제")
+    @Test
+    void removeTag() throws Exception {
+
+        Account n1tjrgns = accountRepository.findByNickname("n1tjrgns");
+        Tag newTag = tagRepository.save(Tag.builder().title("newTitle").build());
+        accountService.addTag(n1tjrgns, newTag);
+
+        TagForm tagForm = new TagForm();
+        tagForm.setTagTitle("newTag");
+
+        mockMvc.perform(post("/settings/tags/remove")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tagForm))
+                .with(csrf()))
+                .andExpect(status().isOk());
+
+        assertFalse(n1tjrgns.getTags().contains(newTag));
     }
 }

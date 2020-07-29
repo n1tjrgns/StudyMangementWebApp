@@ -36,7 +36,6 @@ public class AccountService implements UserDetailsService {
     //@Transactional //트랜잭션을 붙여줘야하는 이유 따로 정리함.
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
-        newAccount.generateEmailCheckToken();
         sendSignUpConfirmEmail(newAccount);
 
         return newAccount;
@@ -52,6 +51,8 @@ public class AccountService implements UserDetailsService {
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdatedByWeb(true)
                 .build();
+
+        account.generateEmailCheckToken(); //update 쿼리를 줄이기 위해서 이메일 토큰 생성시점을 회원가입 시점으로 변경
 
         return accountRepository.save(account);
     }
