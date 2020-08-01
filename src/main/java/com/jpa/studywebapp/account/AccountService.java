@@ -2,6 +2,7 @@ package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Tag;
+import com.jpa.studywebapp.domain.Zone;
 import com.jpa.studywebapp.settings.form.NotificationForm;
 import com.jpa.studywebapp.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,14 +45,16 @@ public class AccountService implements UserDetailsService {
 
     //리팩토링
     private Account saveNewAccount(@Valid SignUpForm signUpForm) {
-        Account account = Account.builder()
+        /*Account account = Account.builder()
                 .email(signUpForm.getEmail())
                 .nickname(signUpForm.getNickname())
                 .password(passwordEncoder.encode(signUpForm.getPassword())) // 패스워드 암호화
-                .studyCreatedByWeb(true)
+                .studyCreatedByWeb(true) //엔티티에서 초기값을 지정해줘도 사실상 적용되지 않아 이렇게 지정해줘야한다. 따라서 이 부분을 리팩토링 한다.
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdatedByWeb(true)
-                .build();
+                .build();*/
+        signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+        Account account = modelMapper.map(signUpForm, Account.class);
 
         account.generateEmailCheckToken(); //update 쿼리를 줄이기 위해서 이메일 토큰 생성시점을 회원가입 시점으로 변경
 
@@ -163,11 +167,21 @@ public class AccountService implements UserDetailsService {
     public Set<Tag> getTags(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         //없으면 에러를 던지고 있으면 태그를 가져온다
-        return byId.orElseThrow(NullPointerException::new).getTags();
+        return byId.orElseThrow(NoSuchElementException::new).getTags();
     }
 
     public void removeTag(Account account, Tag tag) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+
+    public Set<Zone> getZones(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow(NoSuchElementException::new).getZone();
+    }
+
+    public void addZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a ->a.getZone().add(zone));
     }
 }

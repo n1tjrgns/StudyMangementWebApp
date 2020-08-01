@@ -6,10 +6,12 @@ import com.jpa.studywebapp.account.AccountService;
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Tag;
+import com.jpa.studywebapp.domain.Zone;
 import com.jpa.studywebapp.settings.form.*;
 import com.jpa.studywebapp.settings.validator.NicknameValidator;
 import com.jpa.studywebapp.settings.validator.PasswordFormValidator;
 import com.jpa.studywebapp.tag.TagRepository;
+import com.jpa.studywebapp.zone.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,7 @@ public class SettingController {
     private final NicknameValidator nicknameValidator;
     private final TagRepository tagRepository;
     private final ObjectMapper objectMapper; //fasterxml을 기본적으로 의존성이 들어와있
+    private final ZoneRepository zoneRepository;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder){
@@ -161,7 +164,7 @@ public class SettingController {
         List<String> allTags = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
         model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
 
-        return "/settings/tags";
+        return "settings/tags";
     }
 
     //태그 ajax add
@@ -208,5 +211,36 @@ public class SettingController {
         return ResponseEntity.ok().build();
     }
 
+    //활동지역 태그
+    @GetMapping("/settings/zone")
+    public String updateZone(@CurrentUser Account account, Model model) throws JsonProcessingException {
 
+        model.addAttribute(account);
+        Set<Zone> zones = accountService.getZones(account);
+        //model에 리스트로 데이터를 넘기는 방법
+        //실제 데이터는 List<String> tags = List.of("spring","jpa")가 된다.
+        model.addAttribute("zones", zones.stream().map(Zone::getLocalNameCity).collect(Collectors.toList()));
+
+        //전체 태그 가져오기
+        List<String> allZones = zoneRepository.findAll().stream().map(Zone::getLocalNameCity).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allZones));
+
+        return "settings/zones";
+    }
+
+    /*@PostMapping("/settings/zones/add")
+    @ResponseBody
+    public ResponseEntity addZone(@CurrentUser Account account, @RequestBody ZoneForm zoneForm){
+
+        String localCity = zoneForm.getGetLocalNameCity();
+
+        Zone zone = zoneRepository.findByLocalNameCity(localCity);
+
+        if(zone == null){
+            zone = zoneRepository.save(Zone.builder().localNameCity(localCity).build());
+        }
+
+        accountService.addZone(account, zone);
+        return ResponseEntity.ok().build();
+    }*/
 }
