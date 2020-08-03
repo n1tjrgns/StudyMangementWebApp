@@ -212,35 +212,49 @@ public class SettingController {
     }
 
     //활동지역 태그
-    @GetMapping("/settings/zone")
+    @GetMapping("/settings/zones")
     public String updateZone(@CurrentUser Account account, Model model) throws JsonProcessingException {
 
         model.addAttribute(account);
         Set<Zone> zones = accountService.getZones(account);
+        System.out.println("zone : + " +zones);
         //model에 리스트로 데이터를 넘기는 방법
         //실제 데이터는 List<String> tags = List.of("spring","jpa")가 된다.
-        model.addAttribute("zones", zones.stream().map(Zone::getLocalNameCity).collect(Collectors.toList()));
+        model.addAttribute("zones", zones.stream().map(Zone::toString).collect(Collectors.toList()));
 
         //전체 태그 가져오기
-        List<String> allZones = zoneRepository.findAll().stream().map(Zone::getLocalNameCity).collect(Collectors.toList());
+        List<String> allZones = zoneRepository.findAll().stream().map(Zone::toString).collect(Collectors.toList());
         model.addAttribute("whitelist", objectMapper.writeValueAsString(allZones));
 
         return "settings/zones";
     }
 
-    /*@PostMapping("/settings/zones/add")
+    @PostMapping("/settings/zones/add")
     @ResponseBody
     public ResponseEntity addZone(@CurrentUser Account account, @RequestBody ZoneForm zoneForm){
 
-        String localCity = zoneForm.getGetLocalNameCity();
-
-        Zone zone = zoneRepository.findByLocalNameCity(localCity);
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
 
         if(zone == null){
-            zone = zoneRepository.save(Zone.builder().localNameCity(localCity).build());
+            return ResponseEntity.badRequest().build();
         }
 
         accountService.addZone(account, zone);
         return ResponseEntity.ok().build();
-    }*/
+    }
+
+    @PostMapping("/settings/zones/remove")
+    @ResponseBody
+    public ResponseEntity removeZone(@CurrentUser Account account, @RequestBody ZoneForm zoneForm){
+
+        Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
+
+        if(zone == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.removeZone(account, zone);
+
+        return ResponseEntity.ok().build();
+    }
 }

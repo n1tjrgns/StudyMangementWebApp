@@ -177,11 +177,19 @@ public class AccountService implements UserDetailsService {
 
     public Set<Zone> getZones(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
+        System.out.println("id : "+ account.getId());
+        System.out.println("id2 : " + accountRepository.findById(account.getId()));
+        System.out.println("byId : "+byId.toString());
         return byId.orElseThrow(NoSuchElementException::new).getZone();
     }
 
     public void addZone(Account account, Zone zone) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a ->a.getZone().add(zone));
+    }
+
+    public void removeZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getZone().remove(zone));
     }
 }

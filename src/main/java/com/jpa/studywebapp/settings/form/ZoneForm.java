@@ -5,5 +5,7 @@ import lombok.Data;
 @Data
 public class ZoneForm {
 
-    private String getLocalNameCity;
+    private String cityName;
+
+    private String provinceName;
 }
