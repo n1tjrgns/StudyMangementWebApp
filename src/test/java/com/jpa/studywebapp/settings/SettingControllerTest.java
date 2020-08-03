@@ -106,13 +106,14 @@ class SettingControllerTest {
     }
 
     //ajax 데이터 테스트 하는 방법, 데이터 본문이 넘어옴
+    @WithAccount("n1tjrgns")
     @DisplayName("계정에 태그 추가")
     @Test
     void addTag() throws Exception {
         TagForm tagForm = new TagForm();
         tagForm.setTagTitle("newTag");
 
-        mockMvc.perform(post("settings/tags/add")
+        mockMvc.perform(post("/settings/tags/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tagForm))
                 .with(csrf()))
@@ -130,7 +131,7 @@ class SettingControllerTest {
     void removeTag() throws Exception {
 
         Account n1tjrgns = accountRepository.findByNickname("n1tjrgns");
-        Tag newTag = tagRepository.save(Tag.builder().title("newTitle").build());
+        Tag newTag = tagRepository.save(Tag.builder().title("newTag").build());
         accountService.addTag(n1tjrgns, newTag);
 
         TagForm tagForm = new TagForm();
