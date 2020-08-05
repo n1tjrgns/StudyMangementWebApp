@@ -1,14 +1,14 @@
 package com.jpa.studywebapp.account;
 
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.mail.EmailMessage;
+import com.jpa.studywebapp.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,7 @@ class AccountControllerTest {
     private AccountRepository accountRepository;
 
     @MockBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
 
     @DisplayName("회원 가입 화면 보이는성지 테스트")
     @Test
@@ -77,7 +77,7 @@ class AccountControllerTest {
         assertNotEquals("123456",account.getPassword());
 
         //회원가입을 하고나면 mailsender의 send메소드가 호출이 됐는지 확인
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail((any(EmailMessage.class)));
     }
 
     //이메일 인증 테스트

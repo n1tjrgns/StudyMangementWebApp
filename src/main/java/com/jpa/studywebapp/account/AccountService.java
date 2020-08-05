@@ -3,14 +3,13 @@ package com.jpa.studywebapp.account;
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Tag;
 import com.jpa.studywebapp.domain.Zone;
+import com.jpa.studywebapp.mail.EmailMessage;
+import com.jpa.studywebapp.mail.EmailService;
 import com.jpa.studywebapp.settings.form.NotificationForm;
 import com.jpa.studywebapp.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -36,7 +33,7 @@ import java.util.Set;
 public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
-    private final JavaMailSender javaMailSender;
+    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
@@ -68,27 +65,15 @@ public class AccountService implements UserDetailsService {
 
     //메소드 안에 기능이 너무 많아서 리팩토링
     public void sendSignUpConfirmEmail(Account newAccount) {
-        //인증 메일을 html로 보내기 위한 소스 수정
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8"); //메세지, 첨부파일 여부, 인코딩
-            mimeMessageHelper.setTo(newAccount.getEmail());
-            mimeMessageHelper.setSubject("스터디올래, 회원 가입 인증");
-            mimeMessageHelper.setText("/check-email-token?token="+newAccount.getEmailCheckToken() +
-                    "&email=" + newAccount.getEmail(), false); //추후 html로 갈아끼면 true
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            log.error("failed to send email", e);
-        }
 
-        /* 콘솔 메일 발송
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(newAccount.getEmail());
-        simpleMailMessage.setSubject("회원가입 인증 메일입니다.");
-        simpleMailMessage.setText("/check-email-token?token="+newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail() );
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(newAccount.getEmail())
+                .subject("회원가입 인증 메일입니다.")
+                .message("/check-email-token?token="+newAccount.getEmailCheckToken() +
+                        "&email=" + newAccount.getEmail())
+                .build();
 
-        javaMailSender.send(simpleMailMessage);*/
+        emailService.sendEmail(emailMessage);
     }
 
     //로그인 권한 부
@@ -164,14 +149,14 @@ public class AccountService implements UserDetailsService {
 
     //이메일 발송
     public void sendLoginLink(Account emailAccount) {
-        emailAccount.generateEmailCheckToken();
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(emailAccount.getEmail());
-        simpleMailMessage.setSubject("로그인 링크.");
-        simpleMailMessage.setText("/login-by-email?token="+emailAccount.getEmailCheckToken() +
-                "&email=" + emailAccount.getEmail() );
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(emailAccount.getEmail())
+                .subject("로그인 링크.")
+                .message("/login-by-email?token="+emailAccount.getEmailCheckToken() +
+                        "&email=" + emailAccount.getEmail())
+                .build();
 
-        javaMailSender.send(simpleMailMessage);
+        emailService.sendEmail(emailMessage);
     }
 
     public void addTag(Account account, Tag tag) {
