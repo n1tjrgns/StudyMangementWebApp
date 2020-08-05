@@ -15,8 +15,22 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: n1tjrgnsdev@gmail.com
+    password: kytbfwvyymkzohcw
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 
 logging:
   level:
     org.hibernate.SQL: debug #logeer용
     org.hibernate.type: trace #쿼리 파라미터 출력
+
+
