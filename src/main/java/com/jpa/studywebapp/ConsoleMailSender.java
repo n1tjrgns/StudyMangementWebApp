@@ -12,7 +12,8 @@ import javax.mail.internet.MimeMessage;
 import java.io.InputStream;
 
 //콘솔에 메일 발송을 테스트 하기 위한 임시 클래스
-@Profile("local")
+//@Profile({"local"})
+@Profile({"local","dev"})
 @Component
 @Slf4j
 public class ConsoleMailSender implements JavaMailSender {

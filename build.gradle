@@ -27,11 +27,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
-    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -39,7 +41,7 @@ dependencies {
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5' //타임리프 시큐리티
     compile group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.8.0'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6' //모델 매퍼
-
+    compile group: 'org.postgresql', name: 'postgresql'
 }
 
 test {

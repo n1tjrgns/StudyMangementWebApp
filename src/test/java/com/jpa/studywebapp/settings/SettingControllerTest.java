@@ -99,7 +99,7 @@ class SettingControllerTest {
     @Test
     void tagForm() throws Exception {
         mockMvc.perform(get("/settings/tags"))
-                .andExpect(view().name("/settings/tags"))
+                .andExpect(view().name("settings/tags"))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("whitelist"))
                 .andExpect(model().attributeExists("tags"));

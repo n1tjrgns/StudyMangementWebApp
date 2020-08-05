@@ -1,9 +1,22 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
     username: testuser
-    password: testdb
+    password: testpass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug #logeer용
+    org.hibernate.type: trace #쿼리 파라미터 출력
