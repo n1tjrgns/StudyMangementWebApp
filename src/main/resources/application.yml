@@ -16,3 +16,6 @@ logging:
     org.hibernate.SQL: debug #logeer용
     org.hibernate.type: trace #쿼리 파라미터 출력
     #org.hibernate.type.descriptor.sql: BasicBinder
+
+app:
+  host: http://localhost:8080
