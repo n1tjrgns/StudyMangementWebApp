@@ -62,16 +62,24 @@ public class StudyController { //스터디 컨트롤러
     //생성한 스터디 조회
     @GetMapping("/study/{path}")
     public String viewStudy(@CurrentUser Account account, @PathVariable String path, Model model){
+        //스터디를 가져왔는데 없는 경우에 대한 처리
+        /*Study study = studyRepository.findByPath(path);
+        if(study == null){
+            throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
+        }*/
+        Study study = studyService.getStudy(path);
+
         model.addAttribute(account);
-        model.addAttribute(studyRepository.findByPath(path));
+        model.addAttribute(study);
 
         return "study/view";
     }
 
     @GetMapping("/study/{path}/members")
     public String selectMembers(@CurrentUser Account account, @PathVariable String path, Model model){
+        Study study = studyService.getStudy(path);
         model.addAttribute(account);
-        model.addAttribute(studyRepository.findByPath(path));
+        model.addAttribute(study);
 
         return "study/members";
     }

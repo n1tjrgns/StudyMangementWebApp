@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StudyService {
 
-    private final StudyRepository studyRepository;
-    private final ModelMapper modelMapper;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    public final StudyRepository studyRepository;
+    public final ModelMapper modelMapper;
+    public final ApplicationEventPublisher applicationEventPublisher;
 
     public Study createStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
@@ -33,20 +33,20 @@ public class StudyService {
         return study;
     }
 
-    private void checkIfManager(Account account, Study study) {
+    public void checkIfManager(Account account, Study study) {
         if(!study.isManagedBy(account)){
             throw new AccessDeniedException("권한이 없습니다.");
         }
     }
 
-    private Study getStudy(String path) {
+    public Study getStudy(String path) {
         Study study = studyRepository.findByPath(path);
         checkIfExistingStudy(path, study);
 
         return study;
     }
 
-    private void checkIfExistingStudy(String path, Study study) {
+    public void checkIfExistingStudy(String path, Study study) {
         if(study == null){
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
         }
