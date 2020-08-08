@@ -45,6 +45,9 @@ public class AccountService implements UserDetailsService {
     //@Transactional //트랜잭션을 붙여줘야하는 이유 따로 정리함.
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
+
+        //현재 이메일 서비스 로직에서 throw를 던지지 않아 상관이 없지만, 던진다면 transaction에 의해 회원가입까지 롤백 될 것이다.
+        //이 점 기억해두고 따로 처리를 하던지 해야함.
         sendSignUpConfirmEmail(newAccount);
 
         return newAccount;
