@@ -1,5 +1,6 @@
 package com.jpa.studywebapp.domain;
 
+import com.jpa.studywebapp.account.UserAccount;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,6 +8,13 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+//엔티티 그래프 정의
+@NamedEntityGraph(name = "Study.withAllRelations", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers"),
+        @NamedAttributeNode("members"),
+})
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -58,5 +66,20 @@ public class Study {
 
     public void addManager(Account account) {
         this.managers.add(account);
+    }
+
+    //뷰에서 직접 조회 할 메소드 정의
+    public boolean isJoinable(UserAccount userAccount){ //참석 가능 여부
+        Account account = userAccount.getAccount();
+        return this.isPublished() && this.isRecruiting()
+                && !this.members.contains(account) && !this.managers.contains(account);
+    }
+
+    public boolean isMember(UserAccount userAccount){ // 기존 멤버 여부
+        return this.members.contains(userAccount.getAccount());
+    }
+
+    public boolean isManager(UserAccount userAccount){ //기존 매니저 여부
+        return this.members.contains(userAccount.getAccount());
     }
 }
