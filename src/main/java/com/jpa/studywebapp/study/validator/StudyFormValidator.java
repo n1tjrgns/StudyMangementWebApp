@@ -1,6 +1,5 @@
 package com.jpa.studywebapp.study.validator;
 
-import com.jpa.studywebapp.domain.Study;
 import com.jpa.studywebapp.study.StudyRepository;
 import com.jpa.studywebapp.study.form.StudyForm;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ public class StudyFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return Study.class.isAssignableFrom(clazz);
+        return StudyForm.class.isAssignableFrom(clazz);
     }
 
     @Override

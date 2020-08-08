@@ -29,7 +29,7 @@ public class StudyController { //스터디 컨트롤러
     private final ModelMapper modelMapper;
     private final StudyFormValidator studyFormValidator;
 
-    @InitBinder
+    @InitBinder("studyForm")
     public void studyFormValidator(WebDataBinder webDataBinder){
         webDataBinder.addValidators(studyFormValidator);
     }
