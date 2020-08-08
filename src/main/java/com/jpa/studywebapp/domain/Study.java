@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-//엔티티 그래프 정의
+//엔티티 그래프 정
 @NamedEntityGraph(name = "Study.withAllRelations", attributeNodes = {
         @NamedAttributeNode("tags"),
         @NamedAttributeNode("zones"),
@@ -80,6 +80,11 @@ public class Study {
     }
 
     public boolean isManager(UserAccount userAccount){ //기존 매니저 여부
-        return this.members.contains(userAccount.getAccount());
+        return this.managers.contains(userAccount.getAccount());
+    }
+
+    public boolean isManagedBy(Account account) {
+        if(!managers.contains(account)) return false;
+        else return true;
     }
 }
