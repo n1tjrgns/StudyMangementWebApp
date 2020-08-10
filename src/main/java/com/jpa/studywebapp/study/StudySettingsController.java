@@ -30,7 +30,7 @@ public class StudySettingsController {
 
     //스터디 수정 페이지
     @GetMapping("/description")
-    public String viewStudySetting(@CurrentUser Account account, Model model, @PathVariable String path){
+    public String viewStudySetting(@CurrentUser Account account, Model model, @PathVariable String path) {
         //해당 스터디가 존재하고, 매니저 권한인지 확인.
         Study study = studyService.getStudyToUpdate(account, path);
 
@@ -43,11 +43,11 @@ public class StudySettingsController {
 
     @PostMapping("/description")
     public String updateStudyInfo(@CurrentUser Account account, Model model, @PathVariable String path, RedirectAttributes attributes,
-                                        @Valid StudyDescriptionForm studyDescriptionForm, Errors errors) throws UnsupportedEncodingException {
+                                  @Valid StudyDescriptionForm studyDescriptionForm, Errors errors) throws UnsupportedEncodingException {
 
         Study study = studyService.getStudyToUpdate(account, path);
 
-        if(errors.hasErrors()){
+        if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(study);
             return "study/settings/description";
@@ -57,5 +57,40 @@ public class StudySettingsController {
         attributes.addFlashAttribute("message", "스터디 소개가 수정되었습니다.");
 
         return "redirect:/study/" + URLEncoder.encode(study.getPath(), String.valueOf(StandardCharsets.UTF_8));
+    }
+
+    @GetMapping("/banner")
+    public String studyImageForm(@CurrentUser Account account, @PathVariable String path, Model model) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(study);
+        return "study/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String studyImageForm(@CurrentUser Account account, @PathVariable String path, String image,
+                                 RedirectAttributes attributes) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.updateStudyImage(study, image);
+        attributes.addFlashAttribute("message", "이미지를 수정했습니다.");
+        return "redirect:/study/" + getPath(path) + "/settings/banner";
+    }
+
+    private String getPath(String path) throws UnsupportedEncodingException {
+        return URLEncoder.encode(path, String.valueOf(StandardCharsets.UTF_8));
+    }
+
+    @PostMapping("/banner/enable")
+    public String enableStudyBanner(@CurrentUser Account account, @PathVariable String path) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.enableStudyBanner(study);
+        return "redirect:/study/" + getPath(path) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/disable")
+    public String disableStudyBanner(@CurrentUser Account account, @PathVariable String path) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.disableStudyBanner(study);
+        return "redirect:/study/" + getPath(path) + "/settings/banner";
     }
 }
