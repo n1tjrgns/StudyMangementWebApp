@@ -1,24 +1,29 @@
 package com.jpa.studywebapp.study;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Study;
+import com.jpa.studywebapp.domain.Tag;
+import com.jpa.studywebapp.settings.form.TagForm;
 import com.jpa.studywebapp.study.form.StudyDescriptionForm;
+import com.jpa.studywebapp.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/study/{path}/settings")
@@ -27,6 +32,9 @@ public class StudySettingsController {
 
     private final StudyService studyService;
     private final ModelMapper modelMapper;
+    private final TagRepository tagRepository;
+    private final ObjectMapper objectMapper;
+    private final TagService tagService;
 
     //스터디 수정 페이지
     @GetMapping("/description")
@@ -92,5 +100,41 @@ public class StudySettingsController {
         Study study = studyService.getStudyToUpdate(account, path);
         studyService.disableStudyBanner(study);
         return "redirect:/study/" + getPath(path) + "/settings/banner";
+    }
+
+    @GetMapping("/tags")
+    public String studyTagsForm(@CurrentUser Account account, @PathVariable String path, Model model)
+            throws JsonProcessingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(study);
+
+        model.addAttribute("tags", study.getTags().stream()
+                .map(Tag::getTitle).collect(Collectors.toList()));
+        List<String> allTagTitles = tagRepository.findAll().stream()
+                .map(Tag::getTitle).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitles));
+        return "study/settings/tags";
+    }
+
+    @PostMapping("/tags/add")
+    public ResponseEntity addTag(@CurrentUser Account account, @PathVariable String path, @RequestBody TagForm tagForm) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
+        studyService.addTag(study, tag);
+        return ResponseEntity.ok().build();
+    }
+
+        @PostMapping("/tags/remove")
+    public ResponseEntity removeTag(@CurrentUser Account account, @PathVariable String path, @RequestBody TagForm tagForm){
+        Study study = studyService.getStudyToUpdate(account, path);
+        Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
+
+        if(tag == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        studyService.removeTag(study, tag);
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,6 +2,7 @@ package com.jpa.studywebapp.study;
 
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Study;
+import com.jpa.studywebapp.domain.Tag;
 import com.jpa.studywebapp.study.event.StudyUpdateEvent;
 import com.jpa.studywebapp.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
@@ -67,5 +68,13 @@ public class StudyService {
 
     public void disableStudyBanner(Study study){
         study.setUseBanner(false);
+    }
+
+    public void removeTag(Study study, Tag tag) {
+        study.getTags().remove(tag);
+    }
+
+    public void addTag(Study study, Tag tag) {
+        study.getTags().add(tag);
     }
 }
