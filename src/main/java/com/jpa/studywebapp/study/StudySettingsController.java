@@ -123,7 +123,7 @@ public class StudySettingsController {
 
     @PostMapping("/tags/add")
     public ResponseEntity addTag(@CurrentUser Account account, @PathVariable String path, @RequestBody TagForm tagForm) {
-        Study study = studyService.getStudyToUpdate(account, path);
+        Study study = studyService.getStudyToUpdateTag(account, path);
         Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         studyService.addTag(study, tag);
         return ResponseEntity.ok().build();
@@ -131,7 +131,7 @@ public class StudySettingsController {
 
     @PostMapping("/tags/remove")
     public ResponseEntity removeTag(@CurrentUser Account account, @PathVariable String path, @RequestBody TagForm tagForm){
-        Study study = studyService.getStudyToUpdate(account, path);
+        Study study = studyService.getStudyToUpdateTag(account, path);
         Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
 
         if(tag == null){
@@ -160,7 +160,7 @@ public class StudySettingsController {
     @PostMapping("/zones/add")
     public ResponseEntity addZone(@CurrentUser Account account, @RequestBody  ZoneForm zoneForm, @PathVariable String path){
         Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
-        Study study = studyService.getStudyToUpdate(account, path);
+        Study study = studyService.getStudyToUpdateZone(account, path);
         if(zone == null){
             return ResponseEntity.badRequest().build();
         }
@@ -172,7 +172,7 @@ public class StudySettingsController {
     @PostMapping("/zones/remove")
     public ResponseEntity removeZone(@CurrentUser Account account, @RequestBody  ZoneForm zoneForm, @PathVariable String path){
         Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
-        Study study = studyService.getStudyToUpdate(account, path);
+        Study study = studyService.getStudyToUpdateZone(account, path);
         if(zone == null){
             return ResponseEntity.badRequest().build();
         }

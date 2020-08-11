@@ -12,4 +12,11 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @EntityGraph(value="Study.withAllRelations", type = EntityGraph.EntityGraphType.LOAD)
     Study findByPath(String path);
+
+    //With는 Data Jpa 에서 지원하지 않는 키워드이기 때문에 무시된다. 명시적인 이름을 위해 이렇게 작성한다.
+    @EntityGraph(value = "Study.withTagsAndManagers", type = EntityGraph.EntityGraphType.FETCH)
+    Study findAccountWithTagsByPath(String path);
+
+    @EntityGraph(value = "Study.withZonesAndManagers", type = EntityGraph.EntityGraphType.FETCH)
+    Study findAccountWithZonesByPath(String path);
 }

@@ -86,4 +86,18 @@ public class StudyService {
     public void removeZone(Study study, Zone zone) {
         study.getZones().remove(zone);
     }
+
+    public Study getStudyToUpdateTag(Account account, String path) {
+        Study study = studyRepository.findAccountWithTagsByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
+        return study;
+    }
+
+    public Study getStudyToUpdateZone(Account account, String path) {
+        Study study = studyRepository.findAccountWithZonesByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
+        return study;
+    }
 }
