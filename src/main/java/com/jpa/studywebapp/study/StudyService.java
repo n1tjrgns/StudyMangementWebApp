@@ -3,6 +3,7 @@ package com.jpa.studywebapp.study;
 import com.jpa.studywebapp.domain.Account;
 import com.jpa.studywebapp.domain.Study;
 import com.jpa.studywebapp.domain.Tag;
+import com.jpa.studywebapp.domain.Zone;
 import com.jpa.studywebapp.study.event.StudyUpdateEvent;
 import com.jpa.studywebapp.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
@@ -76,5 +77,13 @@ public class StudyService {
 
     public void addTag(Study study, Tag tag) {
         study.getTags().add(tag);
+    }
+
+    public void addZone(Study study, Zone zone) {
+        study.getZones().add(zone);
+    }
+
+    public void removeZone(Study study, Zone zone) {
+        study.getZones().remove(zone);
     }
 }
