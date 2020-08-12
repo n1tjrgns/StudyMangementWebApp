@@ -23,6 +23,10 @@ import java.util.Set;
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers")
 })
+@NamedEntityGraph(name = "Study.withManagers", attributeNodes = {
+        @NamedAttributeNode("managers")
+})
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -94,5 +98,23 @@ public class Study {
     public boolean isManagedBy(Account account) {
         if(!managers.contains(account)) return false;
         else return true;
+    }
+
+    public void publish() {
+        if(!this.closed && !this.published){ // 모임이 종료되지 않았고, 비공개중이면
+            this.published = true;
+            this.publishedDateTime = LocalDateTime.now();
+        }else{
+            throw new RuntimeException("스터디를 공개할 수 없는 상태입니다. 스터디를 이미 공개했거나 종료했습니다.");
+        }
+    }
+
+    public void close() {
+        if(this.published && !this.closed){ // 모임이 공개되어있고, 종료되지 않았으면
+            this.closed = true;
+            this.closedDateTime = LocalDateTime.now();
+        }else{
+            throw new RuntimeException("스터디를 종료할 수 없습니다. 스터디를 공개하지 않았거나 이미 종료한 스터디입니다.");
+        }
     }
 }
