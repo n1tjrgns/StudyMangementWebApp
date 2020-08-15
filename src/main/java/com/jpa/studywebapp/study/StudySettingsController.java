@@ -275,4 +275,11 @@ public class StudySettingsController {
         attributes.addFlashAttribute("message", "스터디 제목이 수정되었습니다.");
         return "redirect:/study/" + getPath(path) + "/settings/study";
     }
+
+    @PostMapping("/study/remove")
+    public String deleteStudy(@CurrentUser Account account, @PathVariable String path) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        studyService.deleteStudy(study);
+        return "redirect:/";
+    }
 }

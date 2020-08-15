@@ -145,4 +145,8 @@ public class StudyService {
     public void updateTitle(Study study, String newTitle) {
         study.setTitle(newTitle);
     }
+
+    public void deleteStudy(Study study) {
+        study.isRemovable();
+    }
 }

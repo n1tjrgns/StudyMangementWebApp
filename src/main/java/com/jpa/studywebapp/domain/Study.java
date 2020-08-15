@@ -145,4 +145,8 @@ public class Study {
     public void updateNewPath(String newPath) {
         this.path = newPath;
     }
+
+    public boolean isRemovable() {
+        return !this.published; //공개되어있는 스터디는 삭제 할 수 없다.
+    }
 }
