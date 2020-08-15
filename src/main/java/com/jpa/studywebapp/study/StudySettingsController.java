@@ -192,7 +192,7 @@ public class StudySettingsController {
 
     @PostMapping("/study/publish")
     public String publishStudy(@CurrentUser Account account, @PathVariable String path, RedirectAttributes attributes) throws UnsupportedEncodingException {
-        Study study = studyService.findStudyWithManagersByPath(account, path);
+        Study study = studyService.getStudyToUpdateStatus(account, path);
         studyService.publish(study);
         attributes.addFlashAttribute("message", "스터디가 공개되었습니다.");
 
@@ -201,9 +201,41 @@ public class StudySettingsController {
 
     @PostMapping("/study/close")
     public String closeStudy(@CurrentUser Account account, @PathVariable String path, RedirectAttributes attributes) throws UnsupportedEncodingException {
-        Study study = studyService.findStudyWithManagersByPath(account, path);
+        Study study = studyService.getStudyToUpdateStatus(account, path);
         studyService.close(study);
         attributes.addFlashAttribute("message", "스터디가 종료되었습니다.");
+
+        return "redirect:/study/" + getPath(path) + "/settings/study";
+    }
+
+    @PostMapping("/recruit/start")
+    public String startRecruit(@CurrentUser Account account, @PathVariable String path, RedirectAttributes attributes) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+
+        //1시간이 지났는지 체크, 시간이 안됐다면 메세지 전달, 리턴
+        if(!study.canUpdateRecruit()){
+            attributes.addFlashAttribute("message", "1시간안에 여러번 상태를 변경 할 수 없습니다.");
+            return "redirect:/study/" + getPath(path) + "/settings/study";
+        }
+        //시간이 지났다면 모집 시작
+        studyService.recruitStart(study);
+        attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
+
+        return "redirect:/study/" + getPath(path) + "/settings/study";
+    }
+
+    @PostMapping("/recruit/stop")
+    public String stopRecruit(@CurrentUser Account account, @PathVariable String path, RedirectAttributes attributes) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+
+        //1시간이 지났는지 체크, 시간이 안됐다면 메세지 전달, 리턴
+        if(!study.canUpdateRecruit()){
+            attributes.addFlashAttribute("message", "1시간안에 여러번 상태를 변경 할 수 없습니다.");
+            return "redirect:/study/" + getPath(path) + "/settings/study";
+        }
+        //시간이 지났다면 모집 시작
+        studyService.recruitStop(study);
+        attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
 
         return "redirect:/study/" + getPath(path) + "/settings/study";
     }

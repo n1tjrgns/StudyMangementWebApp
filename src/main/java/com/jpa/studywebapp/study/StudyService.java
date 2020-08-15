@@ -101,7 +101,7 @@ public class StudyService {
         return study;
     }
 
-    public Study findStudyWithManagersByPath(Account account, String path) {
+    public Study getStudyToUpdateStatus(Account account, String path) {
         Study study = studyRepository.findStudyWithManagersByPath(path);
         checkIfExistingStudy(path, study);
         checkIfManager(account, study);
@@ -116,5 +116,11 @@ public class StudyService {
         study.close();
     }
 
+    public void recruitStart(Study study) {
+        study.recruitStart();
+    }
 
+    public void recruitStop(Study study) {
+        study.recruitStop();
+    }
 }
