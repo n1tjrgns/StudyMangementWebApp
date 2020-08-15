@@ -17,11 +17,11 @@ public class Event {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany
+    @ManyToOne
     private Study study; //어느 스터디에 속한 이벤트인지
 
-    @ManyToMany
-    private Account account;
+    @ManyToOne
+    private Account createdBy;
 
     @Column(nullable = false)
     private String title;
