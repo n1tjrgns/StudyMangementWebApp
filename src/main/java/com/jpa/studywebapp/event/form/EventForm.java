@@ -1,6 +1,6 @@
 package com.jpa.studywebapp.event.form;
 
-import com.jpa.studywebapp.domain.EventType;
+import com.jpa.studywebapp.event.EventType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;

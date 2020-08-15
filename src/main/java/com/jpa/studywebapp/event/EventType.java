@@ -1,4 +1,4 @@
-package com.jpa.studywebapp.domain;
+package com.jpa.studywebapp.event;
 
 public enum EventType {
 

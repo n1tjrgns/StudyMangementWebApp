@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/study/{path}")
@@ -27,12 +28,14 @@ public class EventController {
     private final EventService eventService;
     private final ModelMapper modelMapper;
     private final EventValidator eventValidator;
+    private final EventRepository eventRepository;
 
     @InitBinder("eventForm")
     public void initBinder(WebDataBinder webDataBinder){
         webDataBinder.addValidators(eventValidator);
     }
 
+    //모임 뷰 조회
     @GetMapping("/new-event")
     public String newEventForm(@CurrentUser Account account, Model model, @PathVariable String path){
         Study study = studyService.getStudyToUpdateStatus(account, path);
@@ -42,6 +45,7 @@ public class EventController {
         return "event/form";
     }
 
+    //모임 만들기 submit
     @PostMapping("/new-event")
     public String submitEventForm(@CurrentUser Account account, Model model, @PathVariable String path,
                                   @Valid EventForm eventForm, Errors errors) throws UnsupportedEncodingException {
@@ -56,5 +60,15 @@ public class EventController {
 
         Event event = eventService.updateEvent(account, study, modelMapper.map(eventForm, Event.class));
         return "redirect:/study/" + study.getURLEncoder(path) + "/events/" + event.getId();
+    }
+
+    //만들어진 모임 조회
+    @GetMapping("/events/{id}")
+    public String getEventById(@CurrentUser Account account,@PathVariable String path, Model model, @PathVariable Long id){
+        model.addAttribute(account);
+        model.addAttribute(eventRepository.findById(id).orElseThrow(NoSuchElementException::new));
+        model.addAttribute(studyService.getStudy(path));
+
+        return "event/view";
     }
 }

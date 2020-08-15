@@ -1,5 +1,7 @@
 package com.jpa.studywebapp.domain;
 
+import com.jpa.studywebapp.account.UserAccount;
+import com.jpa.studywebapp.event.EventType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,4 +50,37 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     private EventType eventType;
+
+    public boolean isEnrollableFor(UserAccount userAccount){
+        return isNotClosed() && !isAlreadyEnrolled(userAccount);
+    }
+
+    public boolean isDisenrollableFor(UserAccount userAccount){
+        return isNotClosed() && isAlreadyEnrolled(userAccount);
+    }
+
+    public boolean isAlreadyEnrolled(UserAccount userAccount) {
+        Account account = userAccount.getAccount();
+        for(Enrollment e : this.enrollments){
+            if(e.getAccount().equals(account)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isAttended(UserAccount userAccount) {
+        Account account = userAccount.getAccount();
+        for (Enrollment e : this.enrollments) {
+            if (e.getAccount().equals(account) && e.isAttended()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isNotClosed() {
+        return this.endEnrollmentDateTime.isAfter(LocalDateTime.now());
+    }
 }
