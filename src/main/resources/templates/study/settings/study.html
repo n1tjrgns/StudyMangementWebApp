@@ -118,7 +118,7 @@
                 </div>
 
                 <hr/>
-                <div class="row" th:if="${study.isRemovable()}">
+                <!--<div class="row" th:if="${study.isRemovable()}">
                     <h5 class="col-sm-12 text-danger">스터디 삭제</h5>
                     <form class="col-sm-12" action="#" th:action="@{'/study/' + ${study.getPath()} + '/settings/study/remove'}" method="post" novalidate>
                         <div class="alert alert-danger" role="alert">
@@ -145,7 +145,7 @@
                             <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp" disabled>스터디 삭제</button>
                         </div>
                     </form>
-                </div>
+                </div>-->
             </div>
         </div>
         <div th:replace="fragments.html :: footer"></div>

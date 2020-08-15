@@ -239,4 +239,24 @@ public class StudySettingsController {
 
         return "redirect:/study/" + getPath(path) + "/settings/study";
     }
+
+    @PostMapping("/study/path")
+    public String updateStudyPath(@CurrentUser Account account, Model model, @PathVariable String path
+                            , @RequestParam String newPath, RedirectAttributes attributes) throws UnsupportedEncodingException {
+        //스터디 권한, 경로가 맞는지 체크
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+
+        //새로운경로가 사용할 수 있는지 체크
+        if(!studyService.isValidPath(newPath)){
+            model.addAttribute(account);
+            model.addAttribute(study);
+            attributes.addFlashAttribute("studyPathError", "사용 할 수 없는 경로입니다.");
+            return "redirect:/study/" + getPath(path) + "/settings/study";
+        }
+
+        //사용 할 수 있는 경로면 수정
+        studyService.updatePath(study, newPath);
+        attributes.addFlashAttribute("message", "스터디 경로가 수정되었습니다.");
+        return "redirect:/study/" + getPath(newPath) + "/settings/study";
+    }
 }

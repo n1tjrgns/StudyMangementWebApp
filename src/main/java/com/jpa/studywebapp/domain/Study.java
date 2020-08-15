@@ -141,4 +141,8 @@ public class Study {
             throw new RuntimeException("1시간에 한 번만 스터디를 모집 할 수 있습니다.");
         }
     }
+
+    public void updateNewPath(String newPath) {
+        this.path = newPath;
+    }
 }

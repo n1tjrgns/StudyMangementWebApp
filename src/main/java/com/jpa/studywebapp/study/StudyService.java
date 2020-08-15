@@ -13,6 +13,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.jpa.studywebapp.study.form.StudyForm.PATH_REGEXP;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -122,5 +124,17 @@ public class StudyService {
 
     public void recruitStop(Study study) {
         study.recruitStop();
+    }
+
+    //새로운 경로가 사용 할 수 있는 경로인지 체크
+    public boolean isValidPath(String newPath) {
+        if(!newPath.matches(PATH_REGEXP)){
+            return false;
+        }
+        return !studyRepository.existsByPath(newPath);
+    }
+
+    public void updatePath(Study study, String newPath) {
+        study.updateNewPath(newPath);
     }
 }
