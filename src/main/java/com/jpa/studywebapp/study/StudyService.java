@@ -149,4 +149,12 @@ public class StudyService {
     public void deleteStudy(Study study) {
         study.isRemovable();
     }
+
+    public void addMember(Account account, Study study) {
+        study.addMember(account);
+    }
+
+    public void removeMember(Account account, Study study) {
+        study.removeMember(account);
+    }
 }

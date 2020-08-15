@@ -83,4 +83,18 @@ public class StudyController { //스터디 컨트롤러
 
         return "study/members";
     }
+
+    @GetMapping("/study/{path}/join")
+    public String joinStudy(@CurrentUser Account account, @PathVariable String path) throws UnsupportedEncodingException {
+        Study study = studyRepository.findStudyWithMemebersByPath(path);
+        studyService.addMember(account, study);
+        return "redirect:/study/" + study.getURLEncoder(path) +"/members";
+    }
+
+    @GetMapping("/study/{path}/leave")
+    public String leaveStudy(@CurrentUser Account account, @PathVariable String path) throws UnsupportedEncodingException {
+        Study study = studyRepository.findStudyWithMemebersByPath(path);
+        studyService.removeMember(account, study);
+        return "redirect:/study/" + study.getURLEncoder(path) +"/members";
+    }
 }

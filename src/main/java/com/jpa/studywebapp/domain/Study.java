@@ -4,6 +4,9 @@ import com.jpa.studywebapp.account.UserAccount;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +28,9 @@ import java.util.Set;
 })
 @NamedEntityGraph(name = "Study.withManagers", attributeNodes = {
         @NamedAttributeNode("managers")
+})
+@NamedEntityGraph(name = "Study.withMembers", attributeNodes = {
+        @NamedAttributeNode("members")
 })
 
 @Entity
@@ -148,5 +154,17 @@ public class Study {
 
     public boolean isRemovable() {
         return !this.published; //공개되어있는 스터디는 삭제 할 수 없다.
+    }
+
+    public void addMember(Account account) {
+        this.members.add(account);
+    }
+
+    public String getURLEncoder(String path) throws UnsupportedEncodingException {
+        return URLEncoder.encode(path, String.valueOf(StandardCharsets.UTF_8));
+    }
+
+    public void removeMember(Account account) {
+        this.members.remove(account);
     }
 }
