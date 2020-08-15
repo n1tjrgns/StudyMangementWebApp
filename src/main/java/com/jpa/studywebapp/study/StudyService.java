@@ -137,4 +137,12 @@ public class StudyService {
     public void updatePath(Study study, String newPath) {
         study.updateNewPath(newPath);
     }
+
+    public boolean isValidTitle(String newTitle) {
+        return newTitle.length() <= 50;
+    }
+
+    public void updateTitle(Study study, String newTitle) {
+        study.setTitle(newTitle);
+    }
 }

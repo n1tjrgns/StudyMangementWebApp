@@ -259,4 +259,20 @@ public class StudySettingsController {
         attributes.addFlashAttribute("message", "스터디 경로가 수정되었습니다.");
         return "redirect:/study/" + getPath(newPath) + "/settings/study";
     }
+
+    @PostMapping("/study/title")
+    public String updateStudyTitle(@CurrentUser Account account, Model model
+                            , RedirectAttributes attributes, @PathVariable String path, @RequestParam String newTitle) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        if(!studyService.isValidTitle(newTitle)){
+            model.addAttribute(account);
+            model.addAttribute(study);
+            attributes.addFlashAttribute("studyTitleError", "사용할 수 없는 스터디 제목입니다.");
+            return "redirect:/study/" + getPath(path) + "/settings/study";
+        }
+
+        studyService.updateTitle(study, newTitle);
+        attributes.addFlashAttribute("message", "스터디 제목이 수정되었습니다.");
+        return "redirect:/study/" + getPath(path) + "/settings/study";
+    }
 }
