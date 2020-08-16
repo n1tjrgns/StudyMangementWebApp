@@ -2,6 +2,7 @@ package com.jpa.studywebapp.event;
 
 import com.jpa.studywebapp.account.CurrentUser;
 import com.jpa.studywebapp.domain.Account;
+import com.jpa.studywebapp.domain.Enrollment;
 import com.jpa.studywebapp.domain.Event;
 import com.jpa.studywebapp.domain.Study;
 import com.jpa.studywebapp.event.form.EventForm;
@@ -158,5 +159,41 @@ public class EventController {
         Study study = studyService.getStudyEnrollPath(path);
         eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(Exception::new), account);
         return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ id;
+    }
+
+    //매니저 권한, 모임 참가신청 수락
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/accept")
+    public String accpetEnrollment(@CurrentUser Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId")Enrollment enrollment) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        eventService.acceptEnrollment(event, enrollment);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ event.getId();
+    }
+
+    //매니저 권한, 모임 참가신청 거절
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/reject")
+    public String rejecttEnrollment(@CurrentUser Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId")Enrollment enrollment) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        eventService.rejectEnrollment(event, enrollment);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ event.getId();
+    }
+
+    //매니저 권한, 모임 참가신청 수락
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/checkin")
+    public String checkinEnrollment(@CurrentUser Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId")Enrollment enrollment) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        eventService.checkinEnrollment(event, enrollment);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ event.getId();
+    }
+
+    //매니저 권한, 모임 참가신청 수락
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/accept")
+    public String cancelCheckInEnrollment(@CurrentUser Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId")Enrollment enrollment) throws UnsupportedEncodingException {
+        Study study = studyService.getStudyToUpdate(account, path);
+        eventService.cancelCheckInEnrollment(event, enrollment);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ event.getId();
     }
 }

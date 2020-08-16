@@ -60,4 +60,20 @@ public class EventService {
             event.acceptTheFirstWaitingEnrollment();
         }
     }
+
+    public void acceptEnrollment(Event event, Enrollment enrollment) {
+        event.accpet(enrollment);
+    }
+
+    public void rejectEnrollment(Event event, Enrollment enrollment) {
+        event.reject(enrollment);
+    }
+
+    public void checkinEnrollment(Event event, Enrollment enrollment) {
+        enrollment.setAttended(true);
+    }
+
+    public void cancelCheckInEnrollment(Event event, Enrollment enrollment) {
+        enrollment.setAttended(false);
+    }
 }
