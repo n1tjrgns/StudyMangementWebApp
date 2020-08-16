@@ -11,6 +11,12 @@ spring:
         #show_sql: true #sysout 용
         format_sql: true
 
+# HTML <FORM>에서 th:method에서 PUT 또는 DELETE를 사용해서 보내는 _method를 사용해서  @PutMapping과 @DeleteMapping으로 요청을 맵핑.
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
 logging:
   level:
     org.hibernate.SQL: debug #logeer용
