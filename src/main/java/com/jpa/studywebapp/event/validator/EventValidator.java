@@ -1,5 +1,6 @@
 package com.jpa.studywebapp.event.validator;
 
+import com.jpa.studywebapp.domain.Event;
 import com.jpa.studywebapp.event.form.EventForm;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -43,5 +44,11 @@ public class EventValidator implements Validator {
     private boolean isNotValidEndDateTime(EventForm eventForm) {
         LocalDateTime endDateTime = eventForm.getEndDateTime();
         return endDateTime.isBefore(eventForm.getStartDateTime()) || endDateTime.isBefore(eventForm.getEndEnrollmentDateTime());
+    }
+
+    public void validateUpdateForm(EventForm eventForm, Event event, Errors errors) {
+        if(eventForm.getLimitOfEnrollments() < event.getNumberOfAcceptedEnrollments()){
+            errors.rejectValue("limitOfEnrollments", "wrong.data", "참석 인원은 기존 보다 작을 수 없습니다.");
+        }
     }
 }

@@ -9,9 +9,9 @@ import com.jpa.studywebapp.event.validator.EventValidator;
 import com.jpa.studywebapp.study.StudyService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.Errors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,5 +100,39 @@ public class EventController {
         model.addAttribute("newEvents", newEvents);
         model.addAttribute("oldEvents", oldEvents);
         return "study/events";
+    }
+
+    //모임 수정 뷰
+    @GetMapping("/events/{id}/edit")
+    public String editEventView(@CurrentUser Account account, Model model, @PathVariable Long id, @PathVariable String path) throws Exception {
+
+        Study study = studyService.getStudyToUpdate(account, path);
+        Event event = eventRepository.findById(id).orElseThrow(Exception::new);
+        model.addAttribute(account);
+        model.addAttribute(study);
+        model.addAttribute(event);
+        model.addAttribute(modelMapper.map(event, EventForm.class));
+
+        return "event/update-form";
+    }
+
+    @PostMapping("/events/{id}/edit")
+    public String updateEventView(@CurrentUser Account account, Model model, @PathVariable String path,
+                                  @PathVariable Long id, @Valid EventForm eventForm, Errors errors) throws Exception {
+
+        Study study = studyService.getStudyToUpdate(account, path);
+        Event event = eventRepository.findById(id).orElseThrow(Exception::new);
+        event.setEventType(event.getEventType()); //모집 유형은 변경되면 안되기 때문에 덮어씌워줘야한다.
+        eventValidator.validateUpdateForm(eventForm, event, errors);
+
+        if(errors.hasErrors()){
+            model.addAttribute(account);
+            model.addAttribute(event);
+            model.addAttribute(study);
+            return "event/update-form";
+        }
+
+        eventService.updateEvent(event, eventForm);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/" + event.getId();
     }
 }

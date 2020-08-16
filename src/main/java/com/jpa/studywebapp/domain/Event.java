@@ -10,6 +10,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NamedEntityGraph(name = "Event.withEnrollments", attributeNodes = {
+        @NamedAttributeNode("enrollments")
+})
 @Entity
 @Getter @Setter
 @EqualsAndHashCode(of = "id")
@@ -84,7 +87,13 @@ public class Event {
         return this.endEnrollmentDateTime.isAfter(LocalDateTime.now());
     }
 
+    //잔여 참석자 수
     public int numberOfRemainSpots(){
         return (int) (this.limitOfEnrollments - this.enrollments.stream().filter(Enrollment::isAccepted).count());
+    }
+
+    //현재 참석자 수
+    public long getNumberOfAcceptedEnrollments() {
+        return this.enrollments.stream().filter(Enrollment::isAccepted).count();
     }
 }
