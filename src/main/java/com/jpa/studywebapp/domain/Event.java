@@ -83,4 +83,8 @@ public class Event {
     public boolean isNotClosed() {
         return this.endEnrollmentDateTime.isAfter(LocalDateTime.now());
     }
+
+    public int numberOfRemainSpots(){
+        return (int) (this.limitOfEnrollments - this.enrollments.stream().filter(Enrollment::isAccepted).count());
+    }
 }

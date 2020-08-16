@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -70,5 +73,32 @@ public class EventController {
         model.addAttribute(studyService.getStudy(path));
 
         return "event/view";
+    }
+
+    @GetMapping("/events")
+    public String viewEventList(@CurrentUser Account account, Model model, @PathVariable String path){
+        //해당 경로가 맞는지 체크, 매니저가 아님
+        Study study = studyService.getStudy(path);
+        model.addAttribute(account);
+        model.addAttribute(study);
+
+        //이벤트를 종료시간으로 구분
+        // 1. 현재시간보다 일찍 종료되었으면 옛날
+        // 2. 그렇지 않으면 최신
+        List<Event> eventList = eventRepository.findByStudyOrderByStartDateTime(study);
+        List<Event> newEvents = new ArrayList<>();
+        List<Event> oldEvents = new ArrayList<>();
+
+        for(Event event : eventList){
+            if(event.getEndDateTime().isBefore(LocalDateTime.now())){
+                oldEvents.add(event);
+            }else{
+                newEvents.add(event);
+            }
+        }
+
+        model.addAttribute("newEvents", newEvents);
+        model.addAttribute("oldEvents", oldEvents);
+        return "study/events";
     }
 }
