@@ -56,11 +56,11 @@ public class Event {
     private EventType eventType;
 
     public boolean isEnrollableFor(UserAccount userAccount){
-        return isNotClosed() && !isAlreadyEnrolled(userAccount);
+        return isNotClosed() && !isAttended(userAccount) && !isAlreadyEnrolled(userAccount);
     }
 
     public boolean isDisenrollableFor(UserAccount userAccount){
-        return isNotClosed() && isAlreadyEnrolled(userAccount);
+        return isNotClosed() && !isAttended(userAccount) && isAlreadyEnrolled(userAccount);
     }
 
     public boolean isAlreadyEnrolled(UserAccount userAccount) {

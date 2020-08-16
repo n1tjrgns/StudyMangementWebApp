@@ -52,10 +52,12 @@ public class EventService {
 
     public void cancelEnrollment(Event event, Account account) {
         Enrollment enrollment = enrollmentRepository.findByEventAndAccount(event, account);
-        event.removeEnrollment(enrollment);
-        enrollmentRepository.delete(enrollment);
+        if(!enrollment.isAttended()){ //출석체크를 했으면 참가 신청 취소를 하지 못하도록
+            event.removeEnrollment(enrollment);
+            enrollmentRepository.delete(enrollment);
 
-        //대기중인 인원중에 새로 참가 할 수 있는 인원이 있는 경우
-        event.acceptTheFirstWaitingEnrollment();
+            //대기중인 인원중에 새로 참가 할 수 있는 인원이 있는 경우
+            event.acceptTheFirstWaitingEnrollment();
+        }
     }
 }
