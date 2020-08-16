@@ -157,4 +157,10 @@ public class StudyService {
     public void removeMember(Account account, Study study) {
         study.removeMember(account);
     }
+
+    public Study getStudyEnrollPath(String path) {
+        Study study = studyRepository.findStudyOnlyByPath(path);
+        checkIfExistingStudy(path, study);
+        return study;
+    }
 }

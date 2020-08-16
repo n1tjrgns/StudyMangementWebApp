@@ -136,10 +136,27 @@ public class EventController {
         return "redirect:/study/" + study.getURLEncoder(path) +  "/events/" + event.getId();
     }
 
+    //모임 삭제
     @DeleteMapping("/events/{id}/delete")
     public String deleteEvent(@CurrentUser Account account, @PathVariable String path, @PathVariable Long id) throws Exception {
         Study study = studyService.getStudyToUpdateStatus(account, path);
         eventService.deleteEvent(eventRepository.findById(id).orElseThrow(Exception::new));
         return "redirect:/study/" + study.getURLEncoder(path) +  "/events";
+    }
+
+    //참가 신청
+    @PostMapping("/events/{id}/enroll")
+    public String enrollEvent(@CurrentUser Account account, @PathVariable String path, @PathVariable Long id) throws Exception {
+        Study study = studyService.getStudyEnrollPath(path);
+        eventService.newEnrollment(eventRepository.findById(id).orElseThrow(Exception::new), account);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/" + id;
+    }
+
+    //참가 신청 취소
+    @PostMapping("/events/{id}/disenroll")
+    public String cancelEnrollment(@CurrentUser Account account, @PathVariable String path, @PathVariable Long id) throws Exception {
+        Study study = studyService.getStudyEnrollPath(path);
+        eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(Exception::new), account);
+        return "redirect:/study/" + study.getURLEncoder(path) +  "/events/"+ id;
     }
 }
