@@ -1,5 +1,6 @@
 package com.jpa.studywebapp.modules.main;
 
+import com.jpa.studywebapp.infra.AbstractContainerBaseTest;
 import com.jpa.studywebapp.infra.MockMvcTest;
 import com.jpa.studywebapp.modules.account.AccountRepository;
 import com.jpa.studywebapp.modules.account.AccountService;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @MockMvcTest
-class MainControllerTest {
+class MainControllerTest extends AbstractContainerBaseTest {
 
     @Autowired
     MockMvc mockMvc;

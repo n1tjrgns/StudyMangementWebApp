@@ -2,6 +2,7 @@ package com.jpa.studywebapp.modules.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpa.studywebapp.WithAccount;
+import com.jpa.studywebapp.infra.AbstractContainerBaseTest;
 import com.jpa.studywebapp.infra.MockMvcTest;
 import com.jpa.studywebapp.modules.account.Account;
 import com.jpa.studywebapp.modules.account.AccountRepository;
@@ -24,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @MockMvcTest
-class SettingControllerTest {
+class SettingControllerTest extends AbstractContainerBaseTest {
 
     @Autowired
     MockMvc mockMvc;

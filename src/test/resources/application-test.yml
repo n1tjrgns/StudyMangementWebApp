@@ -1,8 +1,6 @@
 spring:
   datasource:
-    url: jdbc:tc:postgresql://localhost:5432/testdb
-    username: testuser
-    password: testpass
+    url: jdbc:tc:postgresql:///testdb
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   jpa:
     hibernate:
@@ -16,11 +14,3 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-
-logging:
-  level:
-    org.hibernate.SQL: debug #logeer용
-    org.hibernate.type: trace #쿼리 파라미터 출력
-
-
