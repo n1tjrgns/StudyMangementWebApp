@@ -1,7 +1,7 @@
 package com.jpa.studywebapp;
 
-import com.jpa.studywebapp.account.AccountService;
-import com.jpa.studywebapp.account.SignUpForm;
+import com.jpa.studywebapp.modules.account.AccountService;
+import com.jpa.studywebapp.modules.account.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
