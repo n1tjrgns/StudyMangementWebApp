@@ -1,6 +1,7 @@
 package com.jpa.studywebapp.modules.study;
 
 import com.jpa.studywebapp.modules.account.Account;
+import com.jpa.studywebapp.modules.study.event.StudyCreatedEvent;
 import com.jpa.studywebapp.modules.study.event.StudyUpdateEvent;
 import com.jpa.studywebapp.modules.study.form.StudyDescriptionForm;
 import com.jpa.studywebapp.modules.tag.Tag;
@@ -21,11 +22,13 @@ public class StudyService {
 
     public final StudyRepository studyRepository;
     public final ModelMapper modelMapper;
-    public final ApplicationEventPublisher applicationEventPublisher;
+    public final ApplicationEventPublisher eventPublisher; //이벤트 퍼블리셔 추가
 
     public Study createStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
         newStudy.addManager(account);
+
+        eventPublisher.publishEvent(new StudyCreatedEvent(newStudy));
         return newStudy;
     }
 
@@ -57,7 +60,7 @@ public class StudyService {
 
     public void updateStudyDescription(Study study, StudyDescriptionForm studyDescriptionForm) {
         modelMapper.map(studyDescriptionForm, study);
-        applicationEventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디 소개를 수정했습니다."));
+        eventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디 소개를 수정했습니다."));
     }
 
     public void updateStudyImage(Study study, String image) {
