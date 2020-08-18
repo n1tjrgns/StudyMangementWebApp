@@ -21,15 +21,15 @@ public class Notification {
 
     private String link;
 
-    private String message;
+    private String message; //짧은 메세지
 
-    private boolean checked;
+    private boolean checked; //알림 확인 여부
 
     @ManyToOne
-    private Account account;
+    private Account account; //누구에게
 
     private LocalDateTime createdLocalDateTime;
 
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    private NotificationType notificationType; //새 스터디, 참여중인 스터디, 모임 참가 신청 결과
 }
