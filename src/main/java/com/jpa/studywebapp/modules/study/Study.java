@@ -175,6 +175,10 @@ public class Study {
         return URLEncoder.encode(path, String.valueOf(StandardCharsets.UTF_8));
     }
 
+    public String getEncodedPath() throws UnsupportedEncodingException {
+        return URLEncoder.encode(this.path, String.valueOf(StandardCharsets.UTF_8));
+    }
+
     public void removeMember(Account account) {
         this.members.remove(account);
     }
