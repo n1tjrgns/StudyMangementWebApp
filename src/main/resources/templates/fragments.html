@@ -274,7 +274,7 @@
                 </span>
                 <span th:each="zone: ${study.zones}" class="font-weight-light text-monospace badge badge-primary mr-3">
                     <a th:href="@{'/search/zone/' + ${zone.id}}" class="text-decoration-none text-white">
-                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameOfCity}">City</span>
+                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameCity}">City</span>
                     </a>
                 </span>
             </p>
@@ -648,7 +648,7 @@
                                 </span>
                         <span th:each="zone: ${study.zones}" class="font-weight-light text-monospace badge badge-primary mr-3">
                                     <a th:href="@{'/search/zone/' + ${zone.id}}" class="text-decoration-none text-white">
-                                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameOfCity}" class="text-white">City</span>
+                                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameCity}" class="text-white">City</span>
                                     </a>
                                 </span>
                     </p>

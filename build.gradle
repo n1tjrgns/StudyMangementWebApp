@@ -38,10 +38,17 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
+    testCompile group: 'com.tngtech.archunit', name: 'archunit-junit5-api', version: '0.13.1'
+    testCompile group: 'com.tngtech.archunit', name: 'archunit-junit5-engine', version: '0.13.1'
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5' //타임리프 시큐리티
     compile group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.8.0'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6' //모델 매퍼
     compile group: 'org.postgresql', name: 'postgresql'
+    implementation platform('org.testcontainers : testcontainers-bom:1.14.3') //import bom
+    testImplementation('org.testcontainers : postgresql') //no version specified
+    testCompile "org.testcontainers:testcontainers:1.14.3"
+    testCompile "org.testcontainers:junit-jupiter:1.14.3"
+    testCompile "org.testcontainers:postgresql:1.14.3"
 }
 
 test {
