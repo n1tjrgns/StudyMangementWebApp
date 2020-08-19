@@ -58,21 +58,26 @@ public class Account {
     //스터디 생성 여부 알림을 받을 수단
     private boolean studyCreatedByEmail;
 
+    @Builder.Default
     private boolean studyCreatedByWeb = true;
 
     //스터디 가입 신청 결과를 받을 수단
     private boolean studyEnrollmentResultByEmail;
 
+    @Builder.Default
     private boolean studyEnrollmentResultByWeb = true;
 
     //스터디 업데이트 결과를 받을 수단
     private boolean studyUpdatedByEmail;
 
+    @Builder.Default
     private boolean studyUpdatedByWeb = true;
 
+    @Builder.Default
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    @Builder.Default
     @ManyToMany
     private Set<Zone> zone = new HashSet<>();
 
