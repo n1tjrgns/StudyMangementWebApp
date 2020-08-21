@@ -35,6 +35,10 @@ import java.util.Set;
 @NamedEntityGraph(name = "Study.withMembers", attributeNodes = {
         @NamedAttributeNode("members")
 })
+@NamedEntityGraph(name = "Study.withTagsAndZones", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("zones")
+})
 
 @Entity
 @Getter @Setter
@@ -46,9 +50,11 @@ public class Study {
     @Id @GeneratedValue
     private Long id;
 
+    @Builder.Default
     @ManyToMany
     private Set<Account> managers = new HashSet<>(); //관리자
 
+    @Builder.Default
     @ManyToMany
     private Set<Account> members = new HashSet<>();
 
@@ -65,9 +71,11 @@ public class Study {
     @Lob @Basic(fetch = FetchType.EAGER) // Lob타입은 기본값이 EAGER
     private String image;
 
+    @Builder.Default
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    @Builder.Default
     @ManyToMany
     private Set<Zone> zones = new HashSet<>();
 
