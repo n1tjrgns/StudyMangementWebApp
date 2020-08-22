@@ -9,8 +9,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter @Setter
-@NoArgsConstructor @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Notification {
 
     @Id

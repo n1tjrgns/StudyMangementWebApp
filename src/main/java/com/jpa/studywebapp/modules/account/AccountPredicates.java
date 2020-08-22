@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class AccountPredicates {
 
-    //얘는 왜 static이지??
+    //얘는 왜 static이지?? -> 단순히 static method로 사용하기 위함
     public static Predicate findByTagsAndZones(Set<Tag> tags, Set<Zone> zones){
         //tags와 zones을 포함하고있는 아무 account를 달라
         QAccount qAccount = QAccount.account;
