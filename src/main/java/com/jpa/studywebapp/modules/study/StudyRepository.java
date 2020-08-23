@@ -1,5 +1,6 @@
 package com.jpa.studywebapp.modules.study;
 
+import com.jpa.studywebapp.modules.account.Account;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,4 +38,8 @@ public interface StudyRepository extends JpaRepository<Study, Long>, StudyReposi
     Study findStudyWithManagersAndMembersById(Long id);
 
     List<Study> findTop9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published, boolean closed);
+
+    List<Study> findTop5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
+
+    List<Study> findTop5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
 }
