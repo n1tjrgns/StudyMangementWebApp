@@ -1,5 +1,8 @@
 package com.jpa.studywebapp.modules.study;
 
+import com.jpa.studywebapp.modules.account.QAccount;
+import com.jpa.studywebapp.modules.tag.QTag;
+import com.jpa.studywebapp.modules.zone.QZone;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
@@ -20,8 +23,11 @@ public class StudyRepositoryExtensionImpl extends QuerydslRepositorySupport impl
         JPQLQuery<Study> query = from(study).where(study.published.isTrue()
                 .and(study.title.containsIgnoreCase(keyword))
                 .or(study.tags.any().title.containsIgnoreCase(keyword))
-                .or(study.zones.any().localNameCity.containsIgnoreCase(keyword)));
-
+                .or(study.zones.any().localNameCity.containsIgnoreCase(keyword)))
+                .leftJoin(study.tags, QTag.tag).fetchJoin()
+                .leftJoin(study.zones, QZone.zone).fetchJoin()
+                .leftJoin(study.members, QAccount.account).fetchJoin()
+                .distinct();
         return query.fetch();
     }
 }
