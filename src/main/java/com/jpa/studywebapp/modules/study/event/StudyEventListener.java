@@ -22,6 +22,8 @@ import org.thymeleaf.context.Context;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Async
@@ -48,16 +50,37 @@ public class StudyEventListener {
         accounts.forEach(account -> {
             if(account.isStudyCreatedByEmail()){
                 //TODO 이메일 전송, AccountService에 만들어놨던 기능 재사용
-                sendStudyCreatedEmail(study, account);
+                createEmail(study, account,"새로운 스터디가 생겼습니다.", study.getTitle()+"스터디가 생겼습니다.");
             }
             if(account.isStudyCreatedByWeb()){
                 //TODO notification
-                saveNewNotification(study, account);
+                createNotification(study, account, study.getShortDescription(), NotificationType.STUDY_CREATED);
             }
         });
     }
 
-    private void saveNewNotification(Study study, Account account) {
+    @EventListener
+    public void handleStudyUpdateEvent(StudyUpdateEvent studyUpdateEvent){
+        Study study = studyRepository.findStudyWithManagersAndMembersById(studyUpdateEvent.getStudy().getId());
+
+        Set<Account> accounts = new HashSet<>();
+        accounts.addAll(study.getManagers());
+        accounts.addAll(study.getMembers());
+
+        accounts.forEach(account -> {
+            if(account.isStudyUpdatedByEmail()){
+                // EMAIL
+                createEmail(study, account,"새로운 스터디 소식이 있습니다 .", study.getTitle()+"스터디가 생겼습니다.");
+            }
+
+            if(account.isStudyUpdatedByWeb()){
+                // ALim
+                createNotification(study, account, studyUpdateEvent.getMessage(), NotificationType.STUDY_UPDATED);
+            }
+        });
+    }
+
+    private void createNotification(Study study, Account account, String message, NotificationType notificationType) {
         Notification notification = new Notification();
         notification.setTitle(study.getTitle());
         try {
@@ -67,13 +90,13 @@ public class StudyEventListener {
         }
         notification.setChecked(false);
         notification.setCreatedDateTime(LocalDateTime.now());
-        notification.setMessage(study.getShortDescription());
+        notification.setMessage(message);
         notification.setAccount(account);
-        notification.setNotificationType(NotificationType.STUDY_CREATED);
+        notification.setNotificationType(notificationType);
         notificationRepository.save(notification);
     }
 
-    private void sendStudyCreatedEmail(Study study, Account account) {
+    private void createEmail(Study study, Account account, String contextMessage, String emailSubject) {
         Context context = new Context();
         try {
             context.setVariable("link","/study/"+study.getEncodedPath());
@@ -82,12 +105,12 @@ public class StudyEventListener {
         }
         context.setVariable("nickname", account.getNickname());
         context.setVariable("linkName", study.getTitle());
-        context.setVariable("message", "생성된 스터디를 확인하시려면 링크를 클릭하세요.");
+        context.setVariable("message", contextMessage);
         context.setVariable("host", appProperties.getHost());
 
         String message = templateEngine.process("mail/simple-link", context);
         EmailMessage emailMessage = EmailMessage.builder()
-                .subject(study.getTitle() + "스터디가 생성되었습니다. 구경오세요~")
+                .subject(study.getTitle() + emailSubject)
                 .to(account.getEmail())
                 .message(message)
                 .build();

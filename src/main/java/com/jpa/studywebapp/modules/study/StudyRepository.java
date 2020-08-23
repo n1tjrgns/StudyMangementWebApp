@@ -30,4 +30,8 @@ public interface StudyRepository extends JpaRepository<Study, Long>, QuerydslPre
 
     @EntityGraph(value = "Study.withTagsAndZones", type = EntityGraph.EntityGraphType.FETCH)
     Study findStudyWithTagsAndZonesById(Long id);
+
+    //이렇게 사용해도 동일한 기능
+    @EntityGraph(attributePaths = {"members","managers"})
+    Study findStudyWithManagersAndMembersById(Long id);
 }

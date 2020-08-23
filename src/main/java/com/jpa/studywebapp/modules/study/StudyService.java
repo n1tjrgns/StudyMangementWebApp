@@ -58,6 +58,7 @@ public class StudyService {
         }
     }
 
+    //스터디 정보가가 변경되었을 경우
     public void updateStudyDescription(Study study, StudyDescriptionForm studyDescriptionForm) {
         modelMapper.map(studyDescriptionForm, study);
         eventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디 소개를 수정했습니다."));
@@ -119,14 +120,16 @@ public class StudyService {
 
     public void close(Study study) {
         study.close();
+        eventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디가 종료되었습니."));
     }
 
     public void recruitStart(Study study) {
-        study.recruitStart();
+        study.recruitStart();eventPublisher.publishEvent(new StudyUpdateEvent(study,"팀원 모집을 시작합니다."));
     }
 
     public void recruitStop(Study study) {
         study.recruitStop();
+        eventPublisher.publishEvent(new StudyUpdateEvent(study,"팀원 모집을 중단합니다."));
     }
 
     //새로운 경로가 사용 할 수 있는 경로인지 체크
