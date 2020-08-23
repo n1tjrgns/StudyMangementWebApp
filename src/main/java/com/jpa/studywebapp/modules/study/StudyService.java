@@ -185,6 +185,8 @@ public class StudyService {
                     .build();
             //공개 상태로만들어야 보이니까
             study.publish();
+
+
             //업데이트까지
             Study newStudy = this.createStudy(study, account);
             //jpa 태그를 넣어주기

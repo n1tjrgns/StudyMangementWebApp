@@ -3,10 +3,12 @@ package com.jpa.studywebapp.modules.study;
 import com.jpa.studywebapp.modules.account.QAccount;
 import com.jpa.studywebapp.modules.tag.QTag;
 import com.jpa.studywebapp.modules.zone.QZone;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-
-import java.util.List;
 
 public class StudyRepositoryExtensionImpl extends QuerydslRepositorySupport implements StudyRepositoryExtension{
 
@@ -18,7 +20,7 @@ public class StudyRepositoryExtensionImpl extends QuerydslRepositorySupport impl
 
     //querydls을 사용해서 검색 구현, 제목, 태그, 지역에 해당하는 내용 검색
     @Override
-    public List<Study> findByKeyword(String keyword) {
+    public Page<Study> findByKeyword(String keyword, Pageable pageable) {
         QStudy study = QStudy.study;
         JPQLQuery<Study> query = from(study).where(study.published.isTrue()
                 .and(study.title.containsIgnoreCase(keyword))
@@ -28,6 +30,10 @@ public class StudyRepositoryExtensionImpl extends QuerydslRepositorySupport impl
                 .leftJoin(study.zones, QZone.zone).fetchJoin()
                 .leftJoin(study.members, QAccount.account).fetchJoin()
                 .distinct();
-        return query.fetch();
+        //querydslRepositorySupport가 제공해주는 getQuerydsl 사용
+        JPQLQuery<Study> pageableQuery = getQuerydsl().applyPagination(pageable, query);
+        QueryResults<Study> fetchResults = pageableQuery.fetchResults();
+        //pageImpl 구현체 생성
+        return new PageImpl<>(fetchResults.getResults(), pageable, fetchResults.getTotal());
     }
 }

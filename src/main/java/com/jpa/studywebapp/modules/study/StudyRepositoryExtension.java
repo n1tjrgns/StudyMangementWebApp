@@ -1,8 +1,9 @@
 package com.jpa.studywebapp.modules.study;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StudyRepositoryExtension {
 
-    List<Study> findByKeyword(String keyword);
+    Page<Study> findByKeyword(String keyword, Pageable pageable);
 }

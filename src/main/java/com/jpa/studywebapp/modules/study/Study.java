@@ -5,6 +5,7 @@ import com.jpa.studywebapp.modules.account.UserAccount;
 import com.jpa.studywebapp.modules.tag.Tag;
 import com.jpa.studywebapp.modules.zone.Zone;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
@@ -66,9 +67,11 @@ public class Study {
     private String shortDescription;
 
     @Lob @Basic(fetch = FetchType.EAGER) // Lob타입은 기본값이 EAGER
+    @Type(type = "org.hibernate.type.TextType")
     private String fullDescription;
 
     @Lob @Basic(fetch = FetchType.EAGER) // Lob타입은 기본값이 EAGER
+    @Type(type = "org.hibernate.type.TextType")
     private String image;
 
     @Builder.Default

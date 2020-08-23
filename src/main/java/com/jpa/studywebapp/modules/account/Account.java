@@ -3,6 +3,7 @@ package com.jpa.studywebapp.modules.account;
 import com.jpa.studywebapp.modules.tag.Tag;
 import com.jpa.studywebapp.modules.zone.Zone;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,6 +53,7 @@ public class Account {
     private String location;
 
     @Lob @Basic(fetch = FetchType.EAGER) //로그인 시점에 같이 쓰일 수 있도록 EAGER로 가져옴
+    @Type(type = "org.hibernate.type.TextType")
     private String profileImage;
 
     //알림설정 항목지
