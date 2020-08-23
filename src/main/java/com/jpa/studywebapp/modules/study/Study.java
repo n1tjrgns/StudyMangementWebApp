@@ -96,6 +96,9 @@ public class Study {
 
     private boolean useBanner; //배너 사용 여부
 
+    @Builder.Default
+    private int memberCount = 0;
+
     public void addManager(Account account) {
         this.managers.add(account);
     }
@@ -172,6 +175,12 @@ public class Study {
 
     public void addMember(Account account) {
         this.members.add(account);
+        this.memberCount++;
+    }
+
+    public void removeMember(Account account) {
+        this.members.remove(account);
+        this.memberCount--;
     }
 
     public String getURLEncoder(String path) throws UnsupportedEncodingException {
@@ -180,9 +189,5 @@ public class Study {
 
     public String getEncodedPath() throws UnsupportedEncodingException {
         return URLEncoder.encode(this.path, String.valueOf(StandardCharsets.UTF_8));
-    }
-
-    public void removeMember(Account account) {
-        this.members.remove(account);
     }
 }
