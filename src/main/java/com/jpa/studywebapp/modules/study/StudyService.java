@@ -5,8 +5,10 @@ import com.jpa.studywebapp.modules.study.event.StudyCreatedEvent;
 import com.jpa.studywebapp.modules.study.event.StudyUpdateEvent;
 import com.jpa.studywebapp.modules.study.form.StudyDescriptionForm;
 import com.jpa.studywebapp.modules.tag.Tag;
+import com.jpa.studywebapp.modules.tag.TagRepository;
 import com.jpa.studywebapp.modules.zone.Zone;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +25,7 @@ public class StudyService {
     public final StudyRepository studyRepository;
     public final ModelMapper modelMapper;
     public final ApplicationEventPublisher eventPublisher; //이벤트 퍼블리셔 추가
+    private final TagRepository tagRepository;
 
     public Study createStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
@@ -168,5 +171,25 @@ public class StudyService {
         Study study = studyRepository.findStudyOnlyByPath(path);
         checkIfExistingStudy(path, study);
         return study;
+    }
+
+    public void generateTestStudies(Account account) {
+        for(int i=0; i<30; i++){
+            //랜덤 스트링 생성
+            String randomValue = RandomString.make(5);
+            Study study = Study.builder()
+                    .title("테스트 스터디" + randomValue)
+                    .path("test-" + randomValue)
+                    .shortDescription("테스트용 스터디입니다.")
+                    .fullDescription("test")
+                    .build();
+            //공개 상태로만들어야 보이니까
+            study.publish();
+            //업데이트까지
+            Study newStudy = this.createStudy(study, account);
+            //jpa 태그를 넣어주기
+            Tag jpa = tagRepository.findByTitle("JPA");
+            newStudy.getTags().add(jpa);
+        }
     }
 }
