@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional(readOnly = true)
 public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryExtension {
 
@@ -33,4 +35,6 @@ public interface StudyRepository extends JpaRepository<Study, Long>, StudyReposi
     //이렇게 사용해도 동일한 기능
     @EntityGraph(attributePaths = {"members","managers"})
     Study findStudyWithManagersAndMembersById(Long id);
+
+    List<Study> findTop9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published, boolean closed);
 }

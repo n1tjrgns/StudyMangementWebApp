@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -23,6 +25,9 @@ public class MainController {
     public String home(@CurrentUser Account account, Model model){
         if(account != null){
             model.addAttribute(account);
+        }else{
+            List<Study> studyList = studyRepository.findTop9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true, false);
+            model.addAttribute("studyList", studyList);
         }
 
         return "index";
