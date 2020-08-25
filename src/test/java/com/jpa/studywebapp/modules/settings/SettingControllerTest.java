@@ -2,8 +2,6 @@ package com.jpa.studywebapp.modules.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpa.studywebapp.WithAccount;
-import com.jpa.studywebapp.infra.AbstractContainerBaseTest;
-import com.jpa.studywebapp.infra.MockMvcTest;
 import com.jpa.studywebapp.modules.account.Account;
 import com.jpa.studywebapp.modules.account.AccountRepository;
 import com.jpa.studywebapp.modules.account.AccountService;
@@ -14,8 +12,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,8 +25,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@MockMvcTest
-class SettingControllerTest extends AbstractContainerBaseTest {
+//@MockMvcTest
+@Transactional
+@SpringBootTest
+@AutoConfigureMockMvc
+class SettingControllerTest {//extends AbstractContainerBaseTest {
 
     @Autowired
     MockMvc mockMvc;
