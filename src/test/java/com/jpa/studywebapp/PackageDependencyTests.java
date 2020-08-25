@@ -15,11 +15,17 @@ public class PackageDependencyTests {
     private static final String ACCOUNT = "..modules.account..";
     private static final String TAG = "..modules.tag..";
     private static final String ZONE = "..modules.zone..";
+    private static final String MAIN = "..modules.main..";
 
     @ArchTest
-    ArchRule studyPackageRule = classes().that().resideInAPackage("..modules.study..")
+    ArchRule modulesPackageRule = classes().that().resideInAPackage("com.jpa.modules..")
             .should().onlyBeAccessed().byClassesThat()
-            .resideInAnyPackage(STUDY, EVENT); // study랑 event에서만 접근이 가능해야한다.
+            .resideInAnyPackage("com.jpa.modules..");
+
+    @ArchTest
+    ArchRule studyPackageRule = classes().that().resideInAPackage(STUDY)
+            .should().onlyBeAccessed().byClassesThat()
+            .resideInAnyPackage(STUDY, EVENT, MAIN);
 
     @ArchTest
     ArchRule eventPackageRule = classes().that().resideInAPackage(EVENT)
@@ -31,6 +37,6 @@ public class PackageDependencyTests {
 
     //순환의존성 검사
     @ArchTest
-    ArchRule cycleCheck = slices().matching("com.studyolle.modules.(*)..")
+    ArchRule cycleCheck = slices().matching("com.jpa.modules.(*)..")
             .should().beFreeOfCycles();
 }
