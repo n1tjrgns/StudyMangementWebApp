@@ -1,10 +1,13 @@
 spring:
   profiles:
-    active: local
+    active: prod
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 
   jpa:
     hibernate:
-      ddl-auto:  none #개발시에는 create-drop, update로 사용 // 운영에서는 validate
+      ddl-auto:  validate #개발시에는 create-drop, update로 사용 // 운영에서는 validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect #hibernate.dialect' not set h2 에러 해결
