@@ -1,6 +1,15 @@
-language: java
-jdk:
-  - openjdk8
+matrix:
+  include:
+    - language: java
+      jdk:
+        - openjdk8
+      script: "./gradlew clean build"
+
+    - language: node_js
+      node_js: 14
+      script:
+        - "npm test"
+        - "make test"
 
 branches:
   only:
@@ -11,8 +20,7 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
-
-script: "./gradlew clean build"
+    - '$HOME/.npm'
 
 # CI 실행 완료시 메일로 알람
 notifications:
