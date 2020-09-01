@@ -9,8 +9,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter @Setter
-@NoArgsConstructor @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Notification {
 
     @Id
@@ -28,7 +30,7 @@ public class Notification {
     @ManyToOne
     private Account account; //누구에게
 
-    private LocalDateTime createdLocalDateTime;
+    private LocalDateTime createdDateTime;
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType; //새 스터디, 참여중인 스터디, 모임 참가 신청 결과

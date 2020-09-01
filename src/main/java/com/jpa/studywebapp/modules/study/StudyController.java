@@ -96,4 +96,12 @@ public class StudyController { //스터디 컨트롤러
         studyService.removeMember(account, study);
         return "redirect:/study/" + study.getURLEncoder(path) +"/members";
     }
+
+
+    //테스트 데이터 넣기
+    @GetMapping("/study/data")
+    public String generateTestData(@CurrentUser Account account){
+        studyService.generateTestStudies(account);
+        return "redirect:/";
+    }
 }

@@ -2,13 +2,12 @@ package com.jpa.studywebapp.modules.study.event;
 
 import com.jpa.studywebapp.modules.study.Study;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class StudyCreatedEvent {
 
-    private Study study;
+    private final Study study;
 
-    public StudyCreatedEvent(Study study) {
-        this.study = study;
-    }
 }

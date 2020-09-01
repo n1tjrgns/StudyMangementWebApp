@@ -1,11 +1,14 @@
 package com.jpa.studywebapp.modules.study;
 
+import com.jpa.studywebapp.modules.account.Account;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional(readOnly = true)
-public interface StudyRepository extends JpaRepository<Study, Long> {
+public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryExtension {
 
     boolean existsByPath(String path);
 
@@ -29,4 +32,14 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @EntityGraph(value = "Study.withTagsAndZones", type = EntityGraph.EntityGraphType.FETCH)
     Study findStudyWithTagsAndZonesById(Long id);
+
+    //이렇게 사용해도 동일한 기능
+    @EntityGraph(attributePaths = {"members","managers"})
+    Study findStudyWithManagersAndMembersById(Long id);
+
+    List<Study> findTop9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published, boolean closed);
+
+    List<Study> findTop5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
+
+    List<Study> findTop5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
 }

@@ -5,8 +5,10 @@ import com.jpa.studywebapp.modules.study.event.StudyCreatedEvent;
 import com.jpa.studywebapp.modules.study.event.StudyUpdateEvent;
 import com.jpa.studywebapp.modules.study.form.StudyDescriptionForm;
 import com.jpa.studywebapp.modules.tag.Tag;
+import com.jpa.studywebapp.modules.tag.TagRepository;
 import com.jpa.studywebapp.modules.zone.Zone;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,12 +25,13 @@ public class StudyService {
     public final StudyRepository studyRepository;
     public final ModelMapper modelMapper;
     public final ApplicationEventPublisher eventPublisher; //이벤트 퍼블리셔 추가
+    private final TagRepository tagRepository;
 
     public Study createStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
         newStudy.addManager(account);
 
-        eventPublisher.publishEvent(new StudyCreatedEvent(newStudy));
+        //eventPublisher.publishEvent(new StudyCreatedEvent(newStudy));
         return newStudy;
     }
 
@@ -58,6 +61,7 @@ public class StudyService {
         }
     }
 
+    //스터디 정보가가 변경되었을 경우
     public void updateStudyDescription(Study study, StudyDescriptionForm studyDescriptionForm) {
         modelMapper.map(studyDescriptionForm, study);
         eventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디 소개를 수정했습니다."));
@@ -114,18 +118,21 @@ public class StudyService {
 
     public void publish(Study study) {
         study.publish();
+        eventPublisher.publishEvent(new StudyCreatedEvent(study));
     }
 
     public void close(Study study) {
         study.close();
+        eventPublisher.publishEvent(new StudyUpdateEvent(study,"스터디가 종료되었습니."));
     }
 
     public void recruitStart(Study study) {
-        study.recruitStart();
+        study.recruitStart();eventPublisher.publishEvent(new StudyUpdateEvent(study,"팀원 모집을 시작합니다."));
     }
 
     public void recruitStop(Study study) {
         study.recruitStop();
+        eventPublisher.publishEvent(new StudyUpdateEvent(study,"팀원 모집을 중단합니다."));
     }
 
     //새로운 경로가 사용 할 수 있는 경로인지 체크
@@ -164,5 +171,27 @@ public class StudyService {
         Study study = studyRepository.findStudyOnlyByPath(path);
         checkIfExistingStudy(path, study);
         return study;
+    }
+
+    public void generateTestStudies(Account account) {
+        for(int i=0; i<30; i++){
+            //랜덤 스트링 생성
+            String randomValue = RandomString.make(5);
+            Study study = Study.builder()
+                    .title("테스트 스터디" + randomValue)
+                    .path("test-" + randomValue)
+                    .shortDescription("테스트용 스터디입니다.")
+                    .fullDescription("test")
+                    .build();
+            //공개 상태로만들어야 보이니까
+            study.publish();
+
+
+            //업데이트까지
+            Study newStudy = this.createStudy(study, account);
+            //jpa 태그를 넣어주기
+            Tag jpa = tagRepository.findByTitle("JPA");
+            newStudy.getTags().add(jpa);
+        }
     }
 }

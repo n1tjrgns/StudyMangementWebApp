@@ -5,6 +5,7 @@ import com.jpa.studywebapp.modules.account.UserAccount;
 import com.jpa.studywebapp.modules.tag.Tag;
 import com.jpa.studywebapp.modules.zone.Zone;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
@@ -66,9 +67,11 @@ public class Study {
     private String shortDescription;
 
     @Lob @Basic(fetch = FetchType.EAGER) // Lob타입은 기본값이 EAGER
+    @Type(type = "org.hibernate.type.TextType")
     private String fullDescription;
 
     @Lob @Basic(fetch = FetchType.EAGER) // Lob타입은 기본값이 EAGER
+    @Type(type = "org.hibernate.type.TextType")
     private String image;
 
     @Builder.Default
@@ -92,6 +95,9 @@ public class Study {
     private boolean closed; // 종료 여부
 
     private boolean useBanner; //배너 사용 여부
+
+    @Builder.Default
+    private int memberCount = 0;
 
     public void addManager(Account account) {
         this.managers.add(account);
@@ -169,13 +175,23 @@ public class Study {
 
     public void addMember(Account account) {
         this.members.add(account);
+        this.memberCount++;
+    }
+
+    public void removeMember(Account account) {
+        this.members.remove(account);
+        this.memberCount--;
     }
 
     public String getURLEncoder(String path) throws UnsupportedEncodingException {
         return URLEncoder.encode(path, String.valueOf(StandardCharsets.UTF_8));
     }
 
-    public void removeMember(Account account) {
-        this.members.remove(account);
+    public String getEncodedPath() throws UnsupportedEncodingException {
+        return URLEncoder.encode(this.path, String.valueOf(StandardCharsets.UTF_8));
+    }
+
+    public String getImage() {
+        return image != null ? image : "/images/default_banner.jpg";
     }
 }
