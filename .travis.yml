@@ -1,0 +1,29 @@
+matrix:
+  include:
+    - language: java
+      jdk:
+        - openjdk8
+      script: "./gradlew clean build"
+
+    - language: node_js
+      node_js: 14
+      script:
+        - "npm test"
+        - "make test"
+
+branches:
+  only:
+    - master
+
+# Travis CI 서버의 Home
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.gradle'
+    - '$HOME/.npm'
+
+# CI 실행 완료시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - n1tjrgns@naver.com
