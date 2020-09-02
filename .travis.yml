@@ -9,7 +9,6 @@ matrix:
       node_js: 14
       script:
         #- "make test"
-        - "npm init"
         - "npm test"
 
 
