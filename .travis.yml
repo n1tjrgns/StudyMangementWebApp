@@ -8,8 +8,9 @@ matrix:
     - language: node_js
       node_js: 14
       script:
-        - "npm test"
         - "make test"
+        #- "npm test"
+
 
 branches:
   only:
