@@ -1,5 +1,6 @@
 # 스터디 웹 어플리케이션
 
+- 사이트 url : https://bit.ly/2QURl2Z
 - https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-JPA-%EC%9B%B9%EC%95%B1/dashboard 
 - 백기선님의 강좌를 참고하여 웹 어플리케이션을 만들고, 실제 배포까지 진행.
 
